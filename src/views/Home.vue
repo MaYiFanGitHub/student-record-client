@@ -4,7 +4,7 @@
       <Header></Header>
     </el-header>
     <el-container>
-      <el-aside class="home-aside" width="200px">
+      <el-aside class="home-aside" width="210px">
         <Menu></Menu>
       </el-aside>
       <el-container>

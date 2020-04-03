@@ -10,4 +10,7 @@ export default {};
 #app {
   height: 100%;
 }
+#nprogress .bar {
+  background: #409eff !important; //自定义颜色
+}
 </style>

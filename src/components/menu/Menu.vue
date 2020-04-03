@@ -1,10 +1,5 @@
 <template>
-  <el-menu
-    default-active="home"
-    class="el-menu-vertical-demo"
-    @open="handleOpen"
-    @close="handleClose"
-  >
+  <el-menu :default-active="menuActive" class="el-menu-vertical-demo" router>
     <label v-for="menu in menuList" :key="menu.url">
       <!-- 下拉菜单 -->
       <el-submenu :index="menu.url" v-if="menu.children">
@@ -36,15 +31,35 @@ import menuList from "./menuConfig";
 export default {
   data() {
     return {
-      menuList
+      menuList,
+      menuActive: "welcome"
     };
   },
+  mounted() {
+    this.$openMenu();
+  },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    $openMenu() {
+      const path = this.$route.path;
+      menuList.find(menu => {
+        if (menu.children) {
+          const res = menu.children.find(menuChild => menuChild.url === path);
+          if (res) {
+            this.menuActive = res.url;
+            return true;
+          }
+        } else {
+          if (menu.url === path) {
+            this.menuActive = menu.url;
+            return true;
+          }
+        }
+      });
+    }
+  },
+  watch: {
+    "$route.path"() {
+      this.$openMenu();
     }
   }
 };

@@ -22,22 +22,32 @@ const routes = [
           name: "首页"
         },
         component: Welcome,
-        children: [
-          {
-            path: "/welcome/test",
-            component: Test,
-            meta: {
-              name: "测试"
-            }
-          }
-        ]
+        children: []
+      },
+      {
+        path: "/test",
+        component: Test,
+        meta: {
+          name: "测试"
+        }
+      },
+      {
+        name: "404",
+        path: "/404",
+        component: () => import("@c/notFound/NotFound.vue")
       }
     ]
   },
+
   {
     path: "/login",
     name: "login",
     component: Login
+  },
+
+  {
+    path: "*", // 此处需特别注意至于最底部
+    redirect: "/404"
   }
 ];
 
