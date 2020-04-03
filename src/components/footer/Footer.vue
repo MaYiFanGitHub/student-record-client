@@ -1,5 +1,8 @@
 <template>
-  <div>页面底部</div>
+  <div>
+    <p>© 2020-2020 马一帆 - 高校学生档案管理系统</p>
+    <p>0961160211</p>
+  </div>
 </template>
 
 <script>

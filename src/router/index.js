@@ -1,10 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Home from "../views/home/Home.vue";
-import Login from "../views/Login/Login.vue";
-import Welcome from "../views/welcome/Welcome.vue";
-import Test from "../views/test/test.vue";
+import Home from "@v/Home.vue";
+import Login from "@v/Login/Login.vue";
+import Welcome from "@v/welcome/Welcome.vue";
+import Test from "@v/test/test.vue";
 
 Vue.use(VueRouter);
 
@@ -21,7 +21,16 @@ const routes = [
         meta: {
           name: "首页"
         },
-        component: Welcome
+        component: Welcome,
+        children: [
+          {
+            path: "/welcome/test",
+            component: Test,
+            meta: {
+              name: "测试"
+            }
+          }
+        ]
       }
     ]
   },
@@ -29,10 +38,6 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login
-  },
-  {
-    path: "/test",
-    component: Test
   }
 ];
 

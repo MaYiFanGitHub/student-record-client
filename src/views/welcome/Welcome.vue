@@ -1,32 +1,14 @@
 <template>
-  <div style="height: 500px;background:red;">
-    <div ref="div">欢迎页面{{ test }}</div>
-    <router-link to="/welcome/test">跳转测试1</router-link>
-    <router-view></router-view>
+  <div class="welcome">
+    <div>
+      <p>你好, {{ test }}</p>
+      <p>欢迎进入高校学生档案管理系统</p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  beforeCreate() {
-    console.log("------", document.getElementById("app"));
-  },
-  created() {
-    this.$nextTick(() => {
-      console.log("nextTick");
-    });
-  },
-  beforeMount() {
-    console.log(typeof this.$refs);
-    console.log("------", document.getElementById("app"));
-  },
-  mounted() {
-    // debugger
-    console.log("mounted");
-    this.$nextTick(() => {
-      console.log("mounted nextTick");
-    });
-  },
   data() {
     return {
       test: "test"
@@ -35,4 +17,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.welcome {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  background: #fff;
+  p {
+    line-height: 48px;
+    text-align: center;
+  }
+}
+</style>
