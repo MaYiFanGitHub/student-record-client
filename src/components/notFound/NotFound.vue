@@ -62,8 +62,6 @@ export default {
       font-size: 20px;
       line-height: 28px;
     }
-    .actions {
-    }
   }
 }
 </style>
