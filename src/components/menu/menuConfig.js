@@ -5,16 +5,16 @@ const menuList = [
     icon: "el-icon-location"
   },
   {
-    url: "/title",
+    url: "/user",
     title: "用户管理",
     icon: "el-icon-user-solid",
     children: [
       {
-        url: "/test",
+        url: "/user/userAdd",
         title: "添加用户"
       },
       {
-        url: "/title2",
+        url: "/user/userList",
         title: "用户列表"
       }
     ]

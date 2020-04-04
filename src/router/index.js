@@ -4,8 +4,17 @@ import VueRouter from "vue-router";
 import Home from "@v/Home.vue";
 import Login from "@v/Login/Login.vue";
 import Welcome from "@v/welcome/Welcome.vue";
-import Test from "@v/test/test.vue";
 
+// 用户模块
+import UserIndex from "@v/user/Index.vue";
+import UserList from "@v/user/UserList.vue";
+import AddUser from "@v/user/AddUser.vue";
+
+// 解决同一路由下跳转报错
+const routerPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(err => err);
+};
 Vue.use(VueRouter);
 
 const routes = [
@@ -25,12 +34,31 @@ const routes = [
         children: []
       },
       {
-        path: "/test",
-        component: Test,
+        path: "/user",
+        name: "user",
         meta: {
-          name: "测试"
-        }
+          name: "用户管理"
+        },
+        component: UserIndex,
+        redirect: "/user/userList",
+        children: [
+          {
+            path: "/user/userList",
+            meta: {
+              name: "用户列表"
+            },
+            component: UserList
+          },
+          {
+            path: "/user/userAdd",
+            meta: {
+              name: "用户添加"
+            },
+            component: AddUser
+          }
+        ]
       },
+
       {
         name: "404",
         path: "/404",

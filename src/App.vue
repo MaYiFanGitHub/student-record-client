@@ -13,4 +13,15 @@ export default {};
 #nprogress .bar {
   background: #409eff !important; //自定义颜色
 }
+// 动画过渡
+// .fade-enter-active,
+// .fade-leave-active {
+//   transition: all 0.5s;
+// }
+// .fade-leave-to {
+//   display: none;
+// }
+// .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+//   opacity: 0;
+// }
 </style>
