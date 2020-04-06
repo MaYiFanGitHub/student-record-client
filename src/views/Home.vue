@@ -21,7 +21,7 @@
             </el-breadcrumb-item>
           </el-breadcrumb>
           <div class="main-content">
-            <router-view></router-view>
+            <router-view class="view"></router-view>
           </div>
           <el-footer class="home-footer">
             <Footer></Footer>
@@ -80,7 +80,7 @@ export default {
     background: #fafafa;
     padding-bottom: 0px;
     .main-content {
-      height: calc(100% - 86px);
+      min-height: calc(100% - 86px);
     }
     .el-breadcrumb {
       margin-bottom: 20px;
@@ -88,6 +88,7 @@ export default {
     }
   }
   .home-footer {
+    padding-top: 10px;
     color: #c8cdd0;
     text-align: center;
     font-size: 12px;
