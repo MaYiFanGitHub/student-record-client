@@ -80,7 +80,9 @@ export default {
     background: #fafafa;
     padding-bottom: 0px;
     .main-content {
-      min-height: calc(100% - 86px);
+      // width: 1200px;
+      // margin: 0 auto;
+      min-height: calc(100% - 120px);
     }
     .el-breadcrumb {
       margin-bottom: 20px;

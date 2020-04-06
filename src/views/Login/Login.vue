@@ -66,8 +66,8 @@ export default {
     };
   },
   methods: {
-    login(formName) {
-      this.$refs[formName].validate(valid => {
+    login() {
+      this.$refs["userObj"].validate(valid => {
         if (valid) {
           alert("submit!");
         } else {

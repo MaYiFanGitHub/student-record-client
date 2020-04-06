@@ -2,110 +2,7 @@
   <div class="user-add">
     <el-tabs v-model="activeName">
       <el-tab-pane label="添加单个用户" name="first">
-        <el-form ref="form" :model="form" label-width="80px">
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="40">
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="活动名称">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <el-button type="primary" @click="onSubmit">添加</el-button>
-              <el-button>重置</el-button>
-            </el-form-item>
-          </el-col>
-        </el-form>
+        <UserForm></UserForm>
       </el-tab-pane>
       <el-tab-pane label="批量导入用户" name="second">
         <div class="user-add-header cl">
@@ -118,35 +15,132 @@
           <div><el-button type="text" class="fl all">批量删除</el-button></div>
           <el-table
             ref="multipleTable"
-            :data="tableData"
+            :data="userList"
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column label="日期" width="120">
+            <el-table-column label="用户名" min-width="170" align="center">
               <template slot-scope="scope"
-                ><el-input v-model="scope.row.date"></el-input
+                ><el-input v-model="scope.row.user_username"></el-input
               ></template>
             </el-table-column>
-            <el-table-column label="姓名" width="120">
+            <el-table-column label="密码" min-width="170" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.name"></el-input>
+                <el-input v-model="scope.row.user_password"></el-input>
               </template>
             </el-table-column>
-            <el-table-column label="地址" show-overflow-tooltip>
+            <el-table-column label="权限" min-width="170" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.address"></el-input>
+                <el-select
+                  v-model="scope.row.role_id"
+                  placeholder="请选择"
+                  style="width:100%"
+                >
+                  <el-option label="管理员" :value="0"></el-option>
+                  <el-option label="院长" :value="1"></el-option>
+                  <el-option label="教师" :value="2"></el-option>
+                  <el-option label="学生" :value="3"></el-option>
+                </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="地址" show-overflow-tooltip>
+            <el-table-column label="姓名" min-width="170" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.address"></el-input>
+                <el-input v-model="scope.row.user_name"></el-input>
               </template>
             </el-table-column>
-            <el-table-column label="地址" show-overflow-tooltip>
+            <el-table-column label="曾用名" min-width="170" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.address"></el-input>
+                <el-input v-model="scope.row.user_last_name"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="性别" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-radio v-model="scope.row.user_sex" label="男">男</el-radio>
+                <el-radio v-model="scope.row.user_sex" label="女">女</el-radio>
+              </template>
+            </el-table-column>
+            <el-table-column label="年龄" min-width="100" align="center">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.user_age"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="民族" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.user_nation"
+                  placeholder="请选择民族"
+                  style="width:100%"
+                >
+                  <el-option label="汉族" value="汉族"></el-option>
+                  <el-option label="土家族" value="土家族"></el-option>
+                  <el-option label="蒙古族" value="蒙古族"></el-option>
+                  <el-option label="回族" value="回族"></el-option>
+                  <el-option label="苗族" value="苗族"></el-option>
+                  <el-option label="满族" value="满族"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="手机" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.user_tel"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="出生日期" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-date-picker
+                  v-model="scope.row.user_birthday"
+                  type="date"
+                  placeholder="选择日期"
+                  style="width:100%"
+                >
+                </el-date-picker>
+              </template>
+            </el-table-column>
+            <el-table-column label="籍贯" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.user_address"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="健康状况" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.user_heath"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="文化程度" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.user_culture"
+                  placeholder="请选择"
+                  style="width:100%"
+                >
+                  <el-option label="小学" value="小学"></el-option>
+                  <el-option label="初中" value="初中"></el-option>
+                  <el-option label="高中" value="高中"></el-option>
+                  <el-option label="本科" value="本科"></el-option>
+                  <el-option label="研究生" value="研究生"></el-option>
+                  <el-option label="博士" value="博士"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="100" fixed="right">
+              <template slot-scope="scope">
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="mini"
+                  circle
+                  @click="addOrRemove(scope, true)"
+                  :disabled="userList.length === 1"
+                ></el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  size="mini"
+                  circle
+                  v-if="scope.$index === userList.length - 1"
+                  @click="addOrRemove(scope, false)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -162,81 +156,65 @@
 </template>
 
 <script>
+import UserForm from "./UserForm";
 export default {
   data() {
     return {
-      tableData: [
+      userList: [
         {
-          date: "2016-05-03",
-          name: "王小虎1",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎2",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎3",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎4",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎5",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎6",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎7",
-          address: "上海市普陀区金沙江路 1518 弄"
+          user_username: "user1",
+          user_password: "123",
+          role_id: 1,
+          user_name: "张三",
+          user_sex: "男",
+          user_age: 19,
+          user_address: "河北省邯郸市",
+          user_nation: "汉族",
+          user_tel: "13731002865",
+          user_birthday: Date.now(),
+          user_last_name: "李四",
+          user_heath: "健康",
+          user_culture: "本科"
         }
       ],
       multipleSelection: [],
-      activeName: "first",
-      methods: {
-        handleClick(tab, event) {
-          console.log(tab, event);
-        }
-      },
-      form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: ""
+      activeName: "second",
+      userObj: {
+        user_username: "user1",
+        user_password: "123",
+        role_id: 1,
+        user_name: "张三",
+        user_sex: "男",
+        user_age: 19,
+        user_address: "河北省邯郸市",
+        user_nation: "汉族",
+        user_tel: "13731002865",
+        user_birthday: Date.now(),
+        user_last_name: "李四",
+        user_heath: "健康",
+        user_culture: "本科"
       }
     };
   },
   methods: {
-    onSubmit() {
-      console.log("submit!");
-    },
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    addOrRemove(scope, flag) {
+      console.log(scope);
+      if (flag) {
+        // 删除
+        if (this.userList.length !== 1) {
+          this.userList.splice(scope.$index, 1);
+        }
+      } else {
+        // 添加
+        this.userList.push(this.userObj);
+      }
     }
+  },
+  components: {
+    UserForm
   }
 };
 </script>

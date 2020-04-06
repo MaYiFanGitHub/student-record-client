@@ -2,14 +2,17 @@
   <div class="user-list">
     <div class="user-list-header">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="审批人">
-          <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+        <el-form-item label="用户名">
+          <el-input v-model="formInline.user" placeholder="用户名"></el-input>
         </el-form-item>
-        <el-form-item label="活动区域">
-          <el-select v-model="formInline.region" placeholder="活动区域">
+        <el-form-item label="权限">
+          <el-select v-model="formInline.region" placeholder="权限">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="formInline.user" placeholder="姓名"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -17,13 +20,83 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="date" label="日期" width="180">
+      <el-table :data="userList" stripe style="width: 100%" border>
+        <el-table-column label="id" width="50" type="index"></el-table-column>
+        <el-table-column
+          prop="user_username"
+          label="用户名"
+          align="center"
+          min-width="150"
+        >
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="180">
-        </el-table-column>
-        <el-table-column prop="address" label="地址"> </el-table-column>
-        <el-table-column fixed="right" label="操作" width="150">
+        <el-table-column
+          prop="role"
+          label="权限"
+          align="center"
+          min-width="80"
+        ></el-table-column>
+        <el-table-column
+          prop="user_name"
+          label="姓名"
+          align="center"
+          min-width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="user_last_name"
+          label="曾用名"
+          align="center"
+          min-width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="user_sex"
+          label="性别"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="user_age"
+          label="年龄"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="user_nation"
+          label="民族"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="user_tel"
+          label="手机"
+          align="center"
+          min-width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="user_birthday"
+          label="出生日期"
+          align="center"
+          min-width="130"
+        ></el-table-column>
+        <el-table-column
+          prop="user_address"
+          label="籍贯"
+          align="center"
+          min-width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="user_heath"
+          label="健康状况"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="user_culture"
+          label="文化程度"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+
+        <el-table-column align="center" fixed="right" label="操作" width="120">
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -50,10 +123,25 @@
       >
       </el-pagination>
     </div>
+
+    <el-dialog title="修改用户信息" :visible.sync="dialogVisible" width="70%">
+      <userForm
+        :dialogVisible="dialogVisible"
+        :editUserObj="editUserObj"
+        ref="userFormEle"
+      ></userForm>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCloseBtn(false)">取 消</el-button>
+        <el-button type="primary" @click="handleCloseBtn(true)"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import userForm from "./UserForm";
 export default {
   data() {
     return {
@@ -61,28 +149,25 @@ export default {
         user: "",
         region: ""
       },
-      tableData: [
+      userList: [
         {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
+          user_username: "user1",
+          user_password: "123",
+          role_id: 1,
+          user_name: "张三",
+          user_sex: "男",
+          user_age: 19,
+          user_address: "河北省邯郸市",
+          user_nation: "汉族",
+          user_tel: "13731002865",
+          user_birthday: Date.now(),
+          user_last_name: "李四",
+          user_heath: "健康",
+          user_culture: "本科"
         }
-      ]
+      ],
+      dialogVisible: false,
+      editUserObj: {}
     };
   },
   methods: {
@@ -92,6 +177,8 @@ export default {
     handleClick(row, flag) {
       if (flag) {
         // 编辑
+        this.dialogVisible = true;
+        this.editUserObj = Object.assign({}, row);
       } else {
         // 删除
         this.$confirm("确定要删除此记录吗？是否继续?", "提示", {
@@ -112,8 +199,22 @@ export default {
             });
           });
       }
-      console.log(row);
+    },
+    handleCloseBtn(flag) {
+      if (flag) {
+        this.$refs.userFormEle.onSubmit();
+        const reuslt = this.$refs.userFormEle.isSuccess;
+        if (reuslt) {
+          this.dialogVisible = false;
+        }
+      } else {
+        this.$refs.userFormEle.resetForm();
+        this.dialogVisible = false;
+      }
     }
+  },
+  components: {
+    userForm
   }
 };
 </script>
