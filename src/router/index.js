@@ -9,7 +9,6 @@ import Welcome from "@v/welcome/Welcome.vue";
 import UserIndex from "@v/user/Index.vue";
 import UserList from "@v/user/UserList.vue";
 import AddUser from "@v/user/AddUser.vue";
-import EditUser from "@v/user/UserForm.vue";
 
 // 解决同一路由下跳转报错
 const routerPush = VueRouter.prototype.push;
@@ -57,14 +56,6 @@ const routes = [
               name: "用户添加"
             },
             component: AddUser
-          },
-          {
-            path: "/user/editAdd",
-            name: "userEditAdd",
-            meta: {
-              name: "编辑用户"
-            },
-            component: EditUser
           }
         ]
       },

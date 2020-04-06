@@ -12,7 +12,11 @@
           <el-button type="text" class="fr">下载导入模板</el-button>
         </div>
         <div class="user-add-content">
-          <div><el-button type="text" class="fl all">批量删除</el-button></div>
+          <div>
+            <el-button type="text" class="fl all" @click="allDelete"
+              >批量删除</el-button
+            >
+          </div>
           <el-table
             ref="multipleTable"
             :data="userList"
@@ -20,6 +24,12 @@
             style="width: 100%"
             @selection-change="handleSelectionChange"
           >
+            <el-table-column type="selection" width="50"> </el-table-column>
+            <el-table-column
+              label="序号"
+              width="50"
+              type="index"
+            ></el-table-column>
             <el-table-column label="用户名" min-width="170" align="center">
               <template slot-scope="scope"
                 ><el-input v-model="scope.row.user_username"></el-input
@@ -193,12 +203,14 @@ export default {
         user_last_name: "李四",
         user_heath: "健康",
         user_culture: "本科"
-      }
+      },
+      count: 0
     };
   },
   methods: {
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      console.log(val);
     },
     addOrRemove(scope, flag) {
       console.log(scope);
@@ -209,7 +221,17 @@ export default {
         }
       } else {
         // 添加
-        this.userList.push(this.userObj);
+        this.userList.push({});
+      }
+    },
+    allDelete() {
+      const res = this.userList.filter(
+        item => this.multipleSelection.indexOf(item) === -1
+      );
+      this.userList = res;
+
+      if (this.userList.length === 0) {
+        this.userList.push({});
       }
     }
   },
