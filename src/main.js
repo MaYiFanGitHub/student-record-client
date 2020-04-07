@@ -5,6 +5,7 @@ import store from "./store";
 
 import NProgress from "nprogress"; // 进度条
 import "nprogress/nprogress.css"; //这个样式必须引入
+import util from "./util/index";
 
 // 样式重置
 import "./assets/css/reset.css";
@@ -13,6 +14,7 @@ import "./assets/css/reset.css";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 
+Vue.prototype.$ = util;
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 // 简单配置

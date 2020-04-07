@@ -6,9 +6,19 @@
       </el-tab-pane>
       <el-tab-pane label="批量导入用户" name="second">
         <div class="user-add-header cl">
-          <el-button type="primary" class="fr" icon="el-icon-bottom-right"
-            >导入用户</el-button
+          <el-upload
+            :disabled="false"
+            action="customize"
+            name="openFile"
+            :http-request="uploadFile"
+            :file-list="file"
+            :show-file-list="false"
+            class="fr"
           >
+            <el-button type="primary" class="fr" icon="el-icon-bottom-right"
+              >导入用户</el-button
+            >
+          </el-upload>
           <el-button type="text" class="fr">下载导入模板</el-button>
         </div>
         <div class="user-add-content">
@@ -158,7 +168,7 @@
         <div class="user-add-footer">
           <el-button type="primary">提交</el-button>
           &nbsp;&nbsp;
-          <el-button>重置</el-button>
+          <el-button @click="resetClick">重置</el-button>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -167,53 +177,23 @@
 
 <script>
 import UserForm from "./UserForm";
+import XLSX from "xlsx";
 export default {
   data() {
     return {
-      userList: [
-        {
-          user_username: "user1",
-          user_password: "123",
-          role_id: 1,
-          user_name: "张三",
-          user_sex: "男",
-          user_age: 19,
-          user_address: "河北省邯郸市",
-          user_nation: "汉族",
-          user_tel: "13731002865",
-          user_birthday: Date.now(),
-          user_last_name: "李四",
-          user_heath: "健康",
-          user_culture: "本科"
-        }
-      ],
+      userList: [{}],
       multipleSelection: [],
       activeName: "second",
-      userObj: {
-        user_username: "user1",
-        user_password: "123",
-        role_id: 1,
-        user_name: "张三",
-        user_sex: "男",
-        user_age: 19,
-        user_address: "河北省邯郸市",
-        user_nation: "汉族",
-        user_tel: "13731002865",
-        user_birthday: Date.now(),
-        user_last_name: "李四",
-        user_heath: "健康",
-        user_culture: "本科"
-      },
-      count: 0
+      file: []
     };
   },
   methods: {
+    // 表格复选框回调
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(val);
     },
+    // 添加一行或者删除一行
     addOrRemove(scope, flag) {
-      console.log(scope);
       if (flag) {
         // 删除
         if (this.userList.length !== 1) {
@@ -224,6 +204,7 @@ export default {
         this.userList.push({});
       }
     },
+    // 批量删除
     allDelete() {
       const res = this.userList.filter(
         item => this.multipleSelection.indexOf(item) === -1
@@ -233,6 +214,49 @@ export default {
       if (this.userList.length === 0) {
         this.userList.push({});
       }
+    },
+    // 读取文件
+    async uploadFile(params) {
+      const _file = params.file;
+      const fileReader = new FileReader();
+      fileReader.onload = ev => {
+        try {
+          const data = ev.target.result;
+          const workbook = XLSX.read(data, {
+            type: "binary"
+          });
+          for (let sheet in workbook.Sheets) {
+            //循环读取每个文件
+            const sheetArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+            const res = sheetArray.map(item => {
+              return {
+                user_username: item["用户名"],
+                user_password: item["密码"],
+                role_id: item[Object.keys(item)[2]],
+                user_name: item["姓名"],
+                user_sex: item["性别"],
+                user_age: item["年龄"],
+                user_address: item["籍贯"],
+                user_nation: item["民族"],
+                user_tel: item["手机"],
+                user_birthday: this.$.formatDate(item["出生日期"]),
+                user_last_name: item["曾用名"],
+                user_heath: item["健康状况"],
+                user_culture: item["文化程度"]
+              };
+            });
+            this.userList.push(...res);
+          }
+        } catch (e) {
+          this.$message.warning("文件类型不正确！");
+        }
+      };
+      fileReader.readAsBinaryString(_file);
+    },
+    // 重置
+    resetClick() {
+      this.userList = [{}];
+      this.multipleSelection = [];
     }
   },
   components: {
