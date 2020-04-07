@@ -1,8 +1,8 @@
 <template>
   <el-menu :default-active="menuActive" class="el-menu-vertical-demo" router>
-    <label v-for="menu in menuList" :key="menu.url">
+    <label v-for="menu in menuList" :key="menu.id">
       <!-- 下拉菜单 -->
-      <el-submenu :index="menu.url" v-if="menu.children">
+      <el-submenu :index="menu.id" v-if="menu.children">
         <template slot="title">
           <i :class="menu.icon"></i>
           <span>{{ menu.title }}</span>
@@ -10,16 +10,16 @@
         <el-menu-item-group>
           <el-menu-item
             v-for="menuItem in menu.children"
-            :key="menuItem.url"
-            :index="menuItem.url"
+            :key="menuItem.id"
+            :index="menuItem.id"
           >
             {{ menuItem.title }}
           </el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <!-- 单菜单 -->
-      <el-menu-item :index="menu.url" v-else>
-        <i class="el-icon-menu"></i>
+      <el-menu-item :index="menu.id" v-else>
+        <i :class="menu.icon"></i>
         <span slot="title">{{ menu.title }}</span>
       </el-menu-item>
     </label>
@@ -43,14 +43,14 @@ export default {
       const path = this.$route.path;
       menuList.find(menu => {
         if (menu.children) {
-          const res = menu.children.find(menuChild => menuChild.url === path);
+          const res = menu.children.find(menuChild => menuChild.id === path);
           if (res) {
-            this.menuActive = res.url;
+            this.menuActive = res.id;
             return true;
           }
         } else {
-          if (menu.url === path) {
-            this.menuActive = menu.url;
+          if (menu.id === path) {
+            this.menuActive = menu.id;
             return true;
           }
         }

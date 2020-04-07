@@ -21,7 +21,12 @@
     </div>
     <div class="user-list-footer">
       <el-table :data="userList" stripe style="width: 100%" border>
-        <el-table-column label="id" width="50" type="index"></el-table-column>
+        <el-table-column
+          label="id"
+          width="50"
+          type="index"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="user_username"
           label="用户名"
