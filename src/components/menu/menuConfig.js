@@ -55,16 +55,16 @@ const menuList = [
     ]
   },
   {
-    id: "/title-3",
+    id: "/class",
     title: "班级管理",
     icon: "el-icon-price-tag",
     children: [
       {
-        id: "/title221",
+        id: "/class/add",
         title: "班级添加"
       },
       {
-        id: "/title222",
+        id: "/class/list",
         title: "班级列表"
       }
     ]

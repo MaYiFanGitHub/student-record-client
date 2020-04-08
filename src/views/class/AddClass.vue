@@ -22,22 +22,39 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="专业名称" prop="college_name">
-            <el-input v-model="collegeObj.college_name"></el-input>
+          <el-form-item label="所属专业" prop="user_id">
+            <el-select
+              v-model="collegeObj.user_id"
+              placeholder="请选择"
+              style="width:100%"
+            >
+              <el-option label="管理员" :value="0"></el-option>
+              <el-option label="院长" :value="1"></el-option>
+              <el-option label="教师" :value="2"></el-option>
+              <el-option label="学生" :value="3"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row :gutter="40">
         <el-col :span="8" :offset="3">
-          <el-form-item label="专业描述" prop="college_desc">
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 8, maxRows: 16 }"
-              placeholder="请输入内容"
-              v-model="collegeObj.college_desc"
+          <el-form-item label="班主任" prop="user_id">
+            <el-select
+              v-model="collegeObj.user_id"
+              placeholder="请选择"
+              style="width:100%"
             >
-            </el-input>
+              <el-option label="管理员" :value="0"></el-option>
+              <el-option label="院长" :value="1"></el-option>
+              <el-option label="教师" :value="2"></el-option>
+              <el-option label="学生" :value="3"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="班级名称" prop="college_name">
+            <el-input v-model="collegeObj.college_name"></el-input>
           </el-form-item>
         </el-col>
       </el-row>

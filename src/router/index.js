@@ -23,6 +23,9 @@ import MajorIndex from "@v/major/Index.vue";
 import MajorList from "@v/major/MajorList.vue";
 import AddMajor from "@v/major/AddMajor.vue";
 
+// 班级模块
+import classRouter from "./class";
+
 // 解决同一路由下跳转报错
 const routerPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
@@ -151,7 +154,7 @@ const routes = [
           }
         ]
       },
-
+      classRouter,
       {
         name: "404",
         path: "/404",

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="add-college">
     <el-form
       ref="collegeObj"
       :model="collegeObj"
@@ -132,6 +132,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.add-college {
+  width: 1200px;
+  margin: 0 auto;
+  border-radius: 10px;
+}
 .el-form {
   padding-top: 30px;
   background-color: #fff;
