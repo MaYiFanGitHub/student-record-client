@@ -1,25 +1,10 @@
-import {
-  INCREMENT,
-  DECREMENT,
-  INCREMENT_ASYNC,
-  INCREMENT_IF_ODD
-} from "./mutations_type";
+import { RECEIVE_ROLL_ALL } from "./mutations_type";
+import { getAllRole } from "@api/role.js";
 
 export default {
-  increment({ commit }) {
-    commit(INCREMENT);
-  },
-  decrement({ commit }) {
-    commit(DECREMENT);
-  },
-  incrementIfOdd({ commit, state }) {
-    if (state.count % 2 === 1) {
-      commit(INCREMENT_IF_ODD);
-    }
-  },
-  incrementAsync({ commit }) {
-    setTimeout(() => {
-      commit(INCREMENT_ASYNC);
-    }, 1000);
+  // 获取所有角色
+  async getAllRoll({ commit }) {
+    const result = await getAllRole();
+    commit(RECEIVE_ROLL_ALL, result);
   }
 };

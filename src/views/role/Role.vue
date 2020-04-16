@@ -1,19 +1,31 @@
 <template>
   <div class="role-box">
     <div class="header cl">
-      <el-button type="primary" class="fr" @click="addRole">添加角色</el-button>
+      <el-button type="primary" class="fr" @click="addRoleDialog"
+        >添加角色</el-button
+      >
     </div>
     <div class="content">
-      <el-table :data="tableData" border style="width: 100%">
+      <el-table :data="roleList" border style="width: 100%" v-loading="loading">
         <el-table-column
           label="序号"
           width="100"
           type="index"
           align="center"
         ></el-table-column>
-        <el-table-column prop="date" label="角色名" align="center">
+        <el-table-column prop="role_id" label="角色id" align="center">
         </el-table-column>
-        <el-table-column prop="name" label="查看范围" align="center">
+        <el-table-column prop="role_name" label="角色名" align="center">
+        </el-table-column>
+        <el-table-column label="查看范围" align="center" width="520">
+          <template slot-scope="scope">
+            <el-tag
+              v-for="item in scope.row.role_rank"
+              :key="item.id"
+              style="margin:3px"
+              >{{ item.title }}</el-tag
+            >
+          </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="120">
           <template slot-scope="scope">
@@ -35,10 +47,15 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="500px">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="500px"
+      :before-close="handleClose"
+    >
       <el-form :model="role" label-width="80px">
         <el-form-item label="角色名称">
-          <el-input v-model="role.name"></el-input>
+          <el-input v-model="role.role_name"></el-input>
         </el-form-item>
         <el-form-item label="范围">
           <el-tree
@@ -47,6 +64,7 @@
             show-checkbox
             node-key="id"
             :props="defaultProps"
+            @check="nodeClick"
           >
           </el-tree>
         </el-form-item>
@@ -61,85 +79,20 @@
 
 <script>
 import MenuList from "@c/menu/menuConfig.js";
+import { addRole, editRole, removeRole } from "@api/role.js";
+
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
+      loading: true,
       role: {
-        name: ""
+        role_id: -1,
+        role_name: "",
+        role_rank: []
       },
+      isEdit: false,
       dialogVisible: false,
-      treeData: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
-      ],
+      treeData: MenuList,
       defaultProps: {
         children: "children",
         label: "title"
@@ -147,14 +100,33 @@ export default {
     };
   },
   created() {
-    console.log(MenuList);
+    // console.log(MenuList);
+  },
+  mounted() {
+    this.loading = true;
+    this.$store.dispatch("getAllRoll");
+    this.loading = false;
   },
   methods: {
     handleClick(row, flag) {
       if (flag) {
         // 编辑
-        // this.dialogVisible = true;
+        this.dialogVisible = true;
+        this.isEdit = true;
         // this.editUserObj = Object.assign({}, row);
+        let keys = row.role_rank.reduce((pre, item) => {
+          pre.push(item.id);
+          return pre;
+        }, []);
+
+        this.$nextTick(() => {
+          this.$refs.tree.setCheckedKeys(keys);
+          this.role = {
+            role_id: row.role_id,
+            role_name: row.role_name,
+            role_rank: JSON.stringify(this.$refs.tree.getCheckedNodes())
+          };
+        });
       } else {
         // 删除
         this.$confirm("确定要删除此记录吗？是否继续?", "提示", {
@@ -162,30 +134,72 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         })
-          .then(() => {
+          .then(async () => {
+            await removeRole(row.role_id);
             this.$message({
               type: "success",
               message: "删除成功!"
             });
+            this.loading = true;
+            this.$store.dispatch("getAllRoll");
+            this.loading = false;
           })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "已取消删除"
-            });
-          });
+          .catch(() => {});
       }
     },
-    addRole() {
-      this.treeData = MenuList;
+    nodeClick(a, b) {
+      this.role.role_rank = JSON.stringify(b.checkedNodes);
+    },
+    addRoleDialog() {
+      this.isEdit = false;
       this.dialogVisible = true;
     },
-    closeDialog(flag) {
+    handleClose() {
+      this.role = {
+        role_id: -1,
+        role_name: "",
+        role_rank: ""
+      };
+      this.$refs.tree.setCheckedKeys([]);
+      this.dialogVisible = false;
+    },
+    async closeDialog(flag) {
       if (flag) {
-        console.log(this.$refs.tree.getCheckedNodes());
-      } else {
-        this.dialogVisible = false;
+        let result;
+        if (!this.isEdit) {
+          result = await addRole(this.role);
+        } else {
+          // 编辑用户
+          result = await editRole(this.role);
+        }
+        if (result) {
+          this.$message({
+            message: this.isEdit ? "更新成功" : "添加成功",
+            type: "success"
+          });
+          this.loading = true;
+          this.$store.dispatch("getAllRoll");
+          this.loading = false;
+          this.dialogVisible = false;
+        }
       }
+
+      this.handleClose();
+    }
+  },
+  computed: {
+    roleList() {
+      const roleList = this.$store.state.roleList || [];
+      roleList.forEach(role => {
+        const menuList = JSON.parse(role.role_rank);
+        role.role_rank = menuList.reduce((pre, menuItem) => {
+          if (!menuItem.children) {
+            pre.push({ title: menuItem.title, id: menuItem.id });
+          }
+          return pre;
+        }, []);
+      });
+      return roleList;
     }
   }
 };

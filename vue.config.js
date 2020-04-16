@@ -10,7 +10,9 @@ module.exports = {
       .set("@c", resolve("./src/components"))
       .set("@s", resolve("./src/store"))
       .set("@a", resolve("./src/assets"))
-      .set("@v", resolve("./src/views"));
+      .set("@v", resolve("./src/views"))
+      .set("@u", resolve("./src/util"))
+      .set("@api", resolve("./src/api"));
   },
   css: {
     loaderOptions: {
