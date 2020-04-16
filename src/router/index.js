@@ -25,6 +25,8 @@ import AddMajor from "@v/major/AddMajor.vue";
 
 // 班级模块
 import classRouter from "./class";
+// 课程模块
+import courseRouter from "./course.js";
 
 // 解决同一路由下跳转报错
 const routerPush = VueRouter.prototype.push;
@@ -155,6 +157,7 @@ const routes = [
         ]
       },
       classRouter,
+      courseRouter,
       {
         name: "404",
         path: "/404",

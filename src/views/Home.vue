@@ -82,7 +82,7 @@ export default {
     .main-content {
       // width: 1200px;
       // margin: 0 auto;
-      min-height: calc(100% - 120px);
+      height: calc(100% - 120px);
     }
     .el-breadcrumb {
       margin-bottom: 20px;

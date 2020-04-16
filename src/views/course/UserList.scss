@@ -1,0 +1,16 @@
+.user-list{
+  min-height: 100%;
+  >.user-list-header, .user-list-footer{
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    .el-form-item{
+      margin-bottom: 0px;
+    }
+  }
+  .el-pagination{
+    text-align: right;
+    margin-top: 15px;
+  }
+}

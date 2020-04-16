@@ -70,17 +70,36 @@ const menuList = [
     ]
   },
   {
-    id: "/title-4",
+    id: "/course",
     title: "课程管理",
     icon: "el-icon-attract",
     children: [
       {
-        id: "/title2111",
+        id: "/course/add",
         title: "课程添加"
       },
       {
-        id: "/title21112",
+        id: "/course/list",
         title: "课程列表"
+      }
+    ]
+  },
+  {
+    id: "/score",
+    title: "成绩管理",
+    icon: "el-icon-mobile",
+    children: [
+      {
+        id: "/score/add",
+        title: "成绩录入"
+      },
+      {
+        id: "/score/list",
+        title: "成绩查询"
+      },
+      {
+        id: "/score/examine",
+        title: "成绩复议审批"
       }
     ]
   },
@@ -99,25 +118,7 @@ const menuList = [
       }
     ]
   },
-  {
-    id: "/title-5",
-    title: "成绩管理",
-    icon: "el-icon-mobile",
-    children: [
-      {
-        id: "/title12111",
-        title: "成绩录入"
-      },
-      {
-        id: "/ti2tle121112",
-        title: "成绩查询"
-      },
-      {
-        id: "/titl1e22",
-        title: "成绩复议审批"
-      }
-    ]
-  },
+
   {
     id: "title-6",
     title: "学籍管理",
