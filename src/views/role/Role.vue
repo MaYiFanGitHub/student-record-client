@@ -191,7 +191,12 @@ export default {
     roleList() {
       const roleList = this.$store.state.roleList || [];
       roleList.forEach(role => {
-        const menuList = JSON.parse(role.role_rank);
+        let menuList;
+        if (typeof role.role_rank === "string") {
+          menuList = JSON.parse(role.role_rank);
+        } else {
+          menuList = role.role_rank;
+        }
         role.role_rank = menuList.reduce((pre, menuItem) => {
           if (!menuItem.children) {
             pre.push({ title: menuItem.title, id: menuItem.id });
