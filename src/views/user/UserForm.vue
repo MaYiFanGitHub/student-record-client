@@ -35,10 +35,12 @@
               placeholder="请选择"
               style="width:100%"
             >
-              <el-option label="管理员" :value="0"></el-option>
-              <el-option label="院长" :value="1"></el-option>
-              <el-option label="教师" :value="2"></el-option>
-              <el-option label="学生" :value="3"></el-option>
+              <el-option
+                :label="role.role_name"
+                :value="role.role_id"
+                v-for="role in roleList"
+                :key="role.role_id"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -102,6 +104,7 @@
               type="date"
               placeholder="选择日期"
               style="width:100%"
+              value-format="yyyy-MM-dd"
             >
             </el-date-picker>
           </el-form-item>
@@ -150,8 +153,9 @@
 </template>
 
 <script>
+import { addUser } from "@api/user";
 export default {
-  props: ["dialogVisible", "editUserObj"],
+  props: ["dialogVisible", "editUserObj", "roleList"],
   mounted() {
     if (this.editUserObj && this.editUserObj.role_id) {
       this.userObj = Object.assign({}, this.editUserObj);
@@ -169,7 +173,7 @@ export default {
         user_address: "",
         user_nation: "",
         user_tel: "",
-        user_birthday: Date.now(),
+        user_birthday: "",
         user_last_name: "",
         user_heath: "",
         user_culture: ""
@@ -192,9 +196,17 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$refs["userObj"].validate(valid => {
+      this.$refs["userObj"].validate(async valid => {
         if (valid) {
-          alert("submit!");
+          // 添加用户
+          const result = await addUser(this.userObj);
+          if (result) {
+            this.$message({
+              type: "success",
+              message: "添加成功!"
+            });
+            this.userObj = {};
+          }
           this.isSuccess = true;
           return true;
         } else {

@@ -99,9 +99,6 @@ export default {
       }
     };
   },
-  created() {
-    // console.log(MenuList);
-  },
   mounted() {
     this.loading = true;
     this.$store.dispatch("getAllRoll");
@@ -193,7 +190,7 @@ export default {
       roleList.forEach(role => {
         let menuList;
         if (typeof role.role_rank === "string") {
-          menuList = JSON.parse(role.role_rank);
+          menuList = JSON.parse(role.role_rank || []);
         } else {
           menuList = role.role_rank;
         }

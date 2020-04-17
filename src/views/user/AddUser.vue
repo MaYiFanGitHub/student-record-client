@@ -2,7 +2,7 @@
   <div class="user-add">
     <el-tabs v-model="activeName">
       <el-tab-pane label="添加单个用户" name="first">
-        <UserForm></UserForm>
+        <UserForm :roleList="roleList"></UserForm>
       </el-tab-pane>
       <el-tab-pane label="批量导入用户" name="second">
         <div class="user-add-header cl">
@@ -33,6 +33,7 @@
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange"
+            v-loading="loading"
           >
             <el-table-column type="selection" width="50"> </el-table-column>
             <el-table-column
@@ -57,10 +58,12 @@
                   placeholder="请选择"
                   style="width:100%"
                 >
-                  <el-option label="管理员" :value="0"></el-option>
-                  <el-option label="院长" :value="1"></el-option>
-                  <el-option label="教师" :value="2"></el-option>
-                  <el-option label="学生" :value="3"></el-option>
+                  <el-option
+                    :label="role.role_name"
+                    :value="role.role_id"
+                    v-for="role in roleList"
+                    :key="role.role_id"
+                  ></el-option>
                 </el-select>
               </template>
             </el-table-column>
@@ -166,7 +169,7 @@
           </el-table>
         </div>
         <div class="user-add-footer">
-          <el-button type="primary">提交</el-button>
+          <el-button type="primary" @click="addMoreUser">提交</el-button>
           &nbsp;&nbsp;
           <el-button @click="resetClick">重置</el-button>
         </div>
@@ -178,13 +181,19 @@
 <script>
 import UserForm from "./UserForm";
 import XLSX from "xlsx";
+import { mapState } from "vuex";
+import { addMoreUser } from "@api/user";
 export default {
+  mounted() {
+    this.$store.dispatch("getAllRoll");
+  },
   data() {
     return {
       userList: [{}],
       multipleSelection: [],
       activeName: "second",
-      file: []
+      file: [],
+      loading: false
     };
   },
   methods: {
@@ -215,10 +224,21 @@ export default {
         this.userList.push({});
       }
     },
+    async addMoreUser() {
+      const result = await addMoreUser(this.userList);
+      if (result) {
+        this.$message({
+          type: "success",
+          message: "添加成功!"
+        });
+        this.userList = [{}];
+      }
+    },
     // 读取文件
     async uploadFile(params) {
       const _file = params.file;
       const fileReader = new FileReader();
+      this.loading = true;
       fileReader.onload = ev => {
         try {
           const data = ev.target.result;
@@ -247,6 +267,7 @@ export default {
             });
             this.userList.push(...res);
           }
+          this.loading = false;
         } catch (e) {
           this.$message.warning("文件类型不正确！");
         }
@@ -258,6 +279,9 @@ export default {
       this.userList = [{}];
       this.multipleSelection = [];
     }
+  },
+  computed: {
+    ...mapState(["roleList"])
   },
   components: {
     UserForm
