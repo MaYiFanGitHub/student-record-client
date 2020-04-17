@@ -1,6 +1,6 @@
 import ajax from "@u/ajax.js";
 
-// 获取所有学院
+// 分页获取所有学院
 export const getAllCollege = (
   currentPage = 1,
   pageSize = 10,
@@ -17,3 +17,6 @@ export const editCollege = college => ajax.post("/college/edit", college);
 // 删除用户
 export const removeCollege = college_id =>
   ajax.get("/college/remove", { params: { college_id } });
+
+// 获取所有学院
+export const getCollegeSelect = () => ajax.get("/college/select");

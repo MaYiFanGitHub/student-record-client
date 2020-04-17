@@ -2,17 +2,25 @@
   <div class="user-list">
     <div class="user-list-header">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="名称">
+        <el-form-item label="专业名称">
           <el-input
-            v-model="formInline.user"
+            v-model="formInline.specialty_name"
             placeholder="请输入专业名称"
           ></el-input>
         </el-form-item>
-        <el-form-item label="院长">
-          <el-input
-            v-model="formInline.user"
-            placeholder="请选择所属学院"
-          ></el-input>
+        <el-form-item label="所属学院">
+          <el-select
+            v-model="formInline.college_id"
+            placeholder="请选择学院"
+            style="width:100%"
+          >
+            <el-option
+              :label="college.college_name"
+              :value="college.college_id"
+              v-for="college in collegeList"
+              :key="college.college_id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -20,21 +28,26 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table :data="collegeList" stripe style="width: 100%">
+      <el-table
+        :data="majorList"
+        stripe
+        style="width: 100%"
+        v-loading="loading"
+      >
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-form-item label="专业ID">
-                <span>{{ props.row.college_id }}</span>
+                <span>{{ props.row.specialty }}</span>
               </el-form-item>
               <el-form-item label="专业名称">
-                <span>{{ props.row.college_name }}</span>
+                <span>{{ props.row.specialty_name }}</span>
               </el-form-item>
               <el-form-item label="所属学院">
                 <span>{{ props.row.college_name }}</span>
               </el-form-item>
               <el-form-item label="专业描述">
-                <span>{{ props.row.college_desc }}</span>
+                <span>{{ props.row.specialty_desc }}</span>
               </el-form-item>
             </el-form>
           </template>
@@ -46,20 +59,20 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="college_id"
+          prop="specialty"
           label="专业ID"
           align="center"
           min-width="150"
         ></el-table-column>
         <el-table-column
-          prop="college_name"
+          prop="specialty_name"
           label="专业名称"
           align="center"
           min-width="150"
         >
         </el-table-column>
         <el-table-column
-          prop="college_tel"
+          prop="college_name"
           label="所属学院"
           align="center"
           min-width="150"
@@ -85,9 +98,13 @@
       </el-table>
       <el-pagination
         background
-        :hide-on-single-page="true"
-        layout="prev, pager, next"
-        :total="1000"
+        layout="total, prev, pager, next, sizes"
+        :total="page.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page.currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="page.pageSize"
       >
       </el-pagination>
     </div>
@@ -95,30 +112,35 @@
 </template>
 
 <script>
+import { getCollegeSelect } from "@api/college.js";
+import { getAllMajor } from "@api/major.js";
 export default {
+  async mounted() {
+    // 查询所有学院
+    const result = await getCollegeSelect();
+    this.collegeList = [{ college_id: -1, college_name: "全部" }, ...result];
+    this.queryMajor();
+  },
   data() {
     return {
+      collegeList: [],
+      majorList: [],
       formInline: {
-        user: "",
-        region: ""
+        specialty_name: "",
+        college_id: -1
       },
-      collegeList: [
-        {
-          college_id: "12345",
-          college_name: "体育学院",
-          college_desc: "描述描述描述描述描述描述描述描述",
-          college_email: "mayifan_1@163.com",
-          college_room: "北B312",
-          college_tel: "13700000000",
-          user_name: "张三",
-          user_id: 0
-        }
-      ]
+      page: {
+        pageSize: 10, //每页的数据条数
+        currentPage: 1, // 当前页
+        total: 1
+      },
+      loading: false
     };
   },
   methods: {
     onSubmit() {
-      console.log("submit!");
+      this.page.currentPage = 1;
+      this.queryMajor();
     },
     handleClick(row, flag) {
       if (flag) {
@@ -147,6 +169,29 @@ export default {
             });
           });
       }
+    },
+    async queryMajor() {
+      const { currentPage, pageSize } = this.page;
+      const { specialty_name, college_id } = this.formInline;
+      this.loading = true;
+      const result = await getAllMajor(
+        currentPage,
+        pageSize,
+        specialty_name,
+        college_id
+      );
+      this.majorList = result.majorList;
+      this.page = result.page;
+      this.loading = false;
+    },
+    handleSizeChange(val) {
+      this.page.currentPage = 1;
+      this.page.pageSize = val;
+      this.queryMajor();
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val;
+      this.queryMajor();
     }
   },
   components: {}
