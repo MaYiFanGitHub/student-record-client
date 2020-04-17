@@ -6,6 +6,12 @@
       label-width="100px"
       :rules="rules"
     >
+      <el-page-header
+        @back="goBack"
+        content="学院编辑"
+        v-if="$route.params.flag"
+      >
+      </el-page-header>
       <el-row :gutter="40">
         <el-col :span="8" :offset="3">
           <el-form-item label="学院名称" prop="college_name">
@@ -31,10 +37,12 @@
               placeholder="请选择"
               style="width:100%"
             >
-              <el-option label="管理员" :value="0"></el-option>
-              <el-option label="院长" :value="1"></el-option>
-              <el-option label="教师" :value="2"></el-option>
-              <el-option label="学生" :value="3"></el-option>
+              <el-option
+                v-for="userCollege in userCollegeList"
+                :key="userCollege.user_id"
+                :label="userCollege.user_name"
+                :value="userCollege.user_id"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -62,7 +70,7 @@
       <el-row>
         <el-col :span="21" :offset="3">
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">添加</el-button>
+            <el-button type="primary" @click="onSubmit">提交</el-button>
             <el-button @click="resetForm">重置</el-button>
           </el-form-item>
         </el-col>
@@ -72,9 +80,14 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
+import { addCollege, editCollege } from "@api/college.js";
 export default {
   props: [],
   mounted() {
+    // 获取院长身份的角色
+    this.$store.dispatch("getUserCollege");
     const { flag, data } = this.$route.params;
     if (flag) {
       this.collegeObj = data;
@@ -118,15 +131,37 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$refs["collegeObj"].validate(valid => {
+      this.$refs["collegeObj"].validate(async valid => {
         if (valid) {
-          alert("submit!");
+          let result;
+          if (this.$route.params.flag) {
+            result = await editCollege(this.collegeObj);
+          } else {
+            result = await addCollege(this.collegeObj);
+          }
+
+          if (result) {
+            this.collegeObj = {};
+            this.$message({
+              type: "success",
+              message: this.$route.params.flag ? "编辑成功!" : "添加成功!"
+            });
+          }
+          if (this.$route.params.flag) {
+            this.goBack();
+          }
         }
       });
     },
     resetForm() {
       this.$refs["collegeObj"].resetFields();
+    },
+    goBack() {
+      this.$router.back();
     }
+  },
+  computed: {
+    ...mapState(["userCollegeList"])
   }
 };
 </script>
@@ -140,5 +175,8 @@ export default {
 .el-form {
   padding-top: 30px;
   background-color: #fff;
+}
+.el-page-header {
+  padding: 0px 30px 50px;
 }
 </style>

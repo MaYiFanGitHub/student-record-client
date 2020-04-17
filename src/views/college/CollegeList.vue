@@ -2,15 +2,15 @@
   <div class="user-list">
     <div class="user-list-header">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="名称">
+        <el-form-item label="学院名称">
           <el-input
-            v-model="formInline.user"
+            v-model="formInline.college_name"
             placeholder="请输入学院名称"
           ></el-input>
         </el-form-item>
         <el-form-item label="院长">
           <el-input
-            v-model="formInline.user"
+            v-model="formInline.user_name"
             placeholder="请输入院长名称"
           ></el-input>
         </el-form-item>
@@ -20,7 +20,12 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table :data="collegeList" stripe style="width: 100%">
+      <el-table
+        :data="collegeList"
+        stripe
+        style="width: 100%"
+        v-loading="loading"
+      >
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
@@ -112,9 +117,13 @@
       </el-table>
       <el-pagination
         background
-        :hide-on-single-page="true"
-        layout="prev, pager, next"
-        :total="1000"
+        layout="total, prev, pager, next, sizes"
+        :total="page.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page.currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="page.pageSize"
       >
       </el-pagination>
     </div>
@@ -122,30 +131,44 @@
 </template>
 
 <script>
+import { getAllCollege, removeCollege } from "@api/college.js";
 export default {
+  mounted() {
+    this.queryCollege();
+  },
   data() {
     return {
       formInline: {
-        user: "",
-        region: ""
+        college_name: "",
+        user_name: ""
       },
-      collegeList: [
-        {
-          college_id: "12345",
-          college_name: "体育学院",
-          college_desc: "描述描述描述描述描述描述描述描述",
-          college_email: "mayifan_1@163.com",
-          college_room: "北B312",
-          college_tel: "13700000000",
-          user_name: "张三",
-          user_id: 0
-        }
-      ]
+      collegeList: [],
+      page: {
+        pageSize: 10, //每页的数据条数
+        currentPage: 1, // 当前页
+        total: 1
+      },
+      loading: false
     };
   },
   methods: {
+    async queryCollege() {
+      const { currentPage, pageSize } = this.page;
+      const { college_name, user_name } = this.formInline;
+      this.loading = true;
+      const result = await getAllCollege(
+        currentPage,
+        pageSize,
+        college_name,
+        user_name
+      );
+      this.collegeList = result.collegeList;
+      this.page = result.page;
+      this.loading = false;
+    },
     onSubmit() {
-      console.log("submit!");
+      this.page.currentPage = 1;
+      this.queryCollege();
     },
     handleClick(row, flag) {
       if (flag) {
@@ -161,11 +184,16 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
+          .then(async () => {
+            const result = await removeCollege(row.college_id);
+            if (result) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.page.currentPage = 1;
+              this.queryCollege();
+            }
           })
           .catch(() => {
             this.$message({
@@ -174,8 +202,18 @@ export default {
             });
           });
       }
+    },
+    handleSizeChange(val) {
+      this.page.currentPage = 1;
+      this.page.pageSize = val;
+      this.queryCollege();
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val;
+      this.queryCollege();
     }
   },
+  computed: {},
   components: {}
 };
 </script>

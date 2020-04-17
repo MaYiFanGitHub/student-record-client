@@ -170,7 +170,7 @@
 import Monent from "moment";
 import { getAllUser, removeUser } from "@api/user";
 import userForm from "./UserForm";
-// import { mapState } from "vuex";
+
 export default {
   async mounted() {
     this.$store.dispatch("getAllRoll");
@@ -212,7 +212,7 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log(this.formInline);
+      this.page.currentPage = 1;
       this.queryUserList();
     },
     async queryUserList() {

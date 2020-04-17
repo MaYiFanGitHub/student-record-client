@@ -20,3 +20,5 @@ export const editUser = user => ajax.post("/user/edit", user);
 // 删除用户
 export const removeUser = user_username =>
   ajax.get("/user/remove", { params: { user_username } });
+// 查询院长
+export const findUserByCollege = () => ajax.get("/user/findDean");

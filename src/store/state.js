@@ -1,3 +1,4 @@
 export default {
-  roleList: []
+  roleList: [],
+  userCollegeList: []
 };
