@@ -3,16 +3,26 @@
     <div class="user-list-header">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="用户名">
-          <el-input v-model="formInline.user" placeholder="用户名"></el-input>
+          <el-input
+            v-model="formInline.user_username"
+            placeholder="用户名"
+          ></el-input>
         </el-form-item>
         <el-form-item label="权限">
-          <el-select v-model="formInline.region" placeholder="权限">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select v-model="formInline.role_id" placeholder="权限">
+            <el-option
+              :label="role.role_name"
+              :value="role.role_id"
+              v-for="role in roleList"
+              :key="role.role_id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="formInline.user" placeholder="姓名"></el-input>
+          <el-input
+            v-model="formInline.user_name"
+            placeholder="姓名"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -20,7 +30,13 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table :data="userList" stripe style="width: 100%" border>
+      <el-table
+        :data="userList"
+        stripe
+        style="width: 100%"
+        border
+        v-loading="loading"
+      >
         <el-table-column
           label="id"
           width="50"
@@ -35,7 +51,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="role"
+          prop="role_name"
           label="权限"
           align="center"
           min-width="80"
@@ -122,9 +138,13 @@
       </el-table>
       <el-pagination
         background
-        :hide-on-single-page="true"
-        layout="prev, pager, next"
-        :total="1000"
+        layout="total, prev, pager, next, sizes"
+        :total="page.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page.currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="page.pageSize"
       >
       </el-pagination>
     </div>
@@ -133,6 +153,7 @@
       <userForm
         :dialogVisible="dialogVisible"
         :editUserObj="editUserObj"
+        :roleList="$store.state.roleList"
         ref="userFormEle"
       ></userForm>
       <span slot="footer" class="dialog-footer">
@@ -146,13 +167,21 @@
 </template>
 
 <script>
+import Monent from "moment";
+import { getAllUser, removeUser } from "@api/user";
 import userForm from "./UserForm";
+// import { mapState } from "vuex";
 export default {
+  async mounted() {
+    this.$store.dispatch("getAllRoll");
+    this.queryUserList();
+  },
   data() {
     return {
       formInline: {
-        user: "",
-        region: ""
+        user_username: "",
+        role_id: -1,
+        user_name: ""
       },
       userList: [
         {
@@ -172,12 +201,38 @@ export default {
         }
       ],
       dialogVisible: false,
-      editUserObj: {}
+      editUserObj: {},
+      page: {
+        pageSize: 10, //每页的数据条数
+        currentPage: 1, // 当前页
+        total: 1
+      },
+      loading: false
     };
   },
   methods: {
     onSubmit() {
-      console.log("submit!");
+      console.log(this.formInline);
+      this.queryUserList();
+    },
+    async queryUserList() {
+      const { currentPage, pageSize } = this.page;
+      const { user_username, user_name, role_id } = this.formInline;
+      this.loading = true;
+      const result = await getAllUser(
+        currentPage,
+        pageSize,
+        user_username,
+        user_name,
+        role_id
+      );
+      result.userList.forEach(
+        item =>
+          (item.user_birthday = Monent(item.user_birthday).format("YYYY-MM-DD"))
+      );
+      this.userList = result.userList;
+      this.page = result.page;
+      this.loading = false;
     },
     handleClick(row, flag) {
       if (flag) {
@@ -191,11 +246,15 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
+          .then(async () => {
+            const result = await removeUser(row.user_username);
+            if (result) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.queryUserList();
+            }
           })
           .catch(() => {
             this.$message({
@@ -208,14 +267,29 @@ export default {
     handleCloseBtn(flag) {
       if (flag) {
         this.$refs.userFormEle.onSubmit();
-        const reuslt = this.$refs.userFormEle.isSuccess;
-        if (reuslt) {
-          this.dialogVisible = false;
-        }
+        this.dialogVisible = false;
+        this.queryUserList();
       } else {
         this.$refs.userFormEle.resetForm();
         this.dialogVisible = false;
       }
+    },
+    handleSizeChange(val) {
+      this.page.currentPage = 1;
+      this.page.pageSize = val;
+      this.queryUserList();
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val;
+      this.queryUserList();
+    }
+  },
+  computed: {
+    roleList() {
+      return [
+        { role_id: -1, role_name: "全部" },
+        ...this.$store.state.roleList
+      ];
     }
   },
   components: {

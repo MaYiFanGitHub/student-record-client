@@ -19,7 +19,10 @@
               >导入用户</el-button
             >
           </el-upload>
-          <el-button type="text" class="fr">下载导入模板</el-button>
+          <a
+            href="http://localhost:3000/template/%E7%94%A8%E6%88%B7%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx"
+            ><el-button type="text" class="fr">下载导入模板</el-button></a
+          >
         </div>
         <div class="user-add-content">
           <div>

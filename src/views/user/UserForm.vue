@@ -4,7 +4,10 @@
       <el-row :gutter="40">
         <el-col :span="8" :offset="3">
           <el-form-item label="用户名" prop="user_username">
-            <el-input v-model="userObj.user_username"></el-input>
+            <el-input
+              v-model="userObj.user_username"
+              :disabled="dialogVisible"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -153,13 +156,11 @@
 </template>
 
 <script>
-import { addUser } from "@api/user";
+import { addUser, editUser } from "@api/user";
 export default {
   props: ["dialogVisible", "editUserObj", "roleList"],
-  mounted() {
-    if (this.editUserObj && this.editUserObj.role_id) {
-      this.userObj = Object.assign({}, this.editUserObj);
-    }
+  created() {
+    this.userObj = this.editUserObj || {};
   },
   data() {
     return {
@@ -191,27 +192,32 @@ export default {
           message: "请输入密码",
           trigger: "blur"
         }
-      }
+      },
+      isSuccess: false
     };
   },
   methods: {
     onSubmit() {
       this.$refs["userObj"].validate(async valid => {
         if (valid) {
+          let result;
           // 添加用户
-          const result = await addUser(this.userObj);
+          if (this.dialogVisible) {
+            result = await editUser(this.userObj);
+          } else {
+            result = await addUser(this.userObj);
+          }
+
           if (result) {
             this.$message({
               type: "success",
-              message: "添加成功!"
+              message: this.dialogVisible ? "更新成功" : "添加成功!"
             });
             this.userObj = {};
           }
           this.isSuccess = true;
-          return true;
         } else {
           this.isSuccess = false;
-          return false;
         }
       });
     },
