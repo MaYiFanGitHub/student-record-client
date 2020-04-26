@@ -12,3 +12,8 @@ export const getAllMajor = (
   ajax.get("/major/all", {
     params: { currentPage, pageSize, specialty_name, college_id }
   });
+// 修改学院
+export const editMajor = major => ajax.post("/major/edit", major);
+// 删除学院
+export const removeMajor = specialty =>
+  ajax.get("/major/remove", { params: { specialty } });

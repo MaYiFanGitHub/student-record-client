@@ -69,7 +69,7 @@ export default {
     login() {
       this.$refs["userObj"].validate(valid => {
         if (valid) {
-          alert("submit!");
+          alert("登陆成功!");
         } else {
           return false;
         }

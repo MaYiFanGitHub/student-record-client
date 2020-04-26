@@ -14,7 +14,7 @@ export const getAllCollege = (
 export const addCollege = college => ajax.post("/college/add", college);
 // 修改学院
 export const editCollege = college => ajax.post("/college/edit", college);
-// 删除用户
+// 删除学院
 export const removeCollege = college_id =>
   ajax.get("/college/remove", { params: { college_id } });
 

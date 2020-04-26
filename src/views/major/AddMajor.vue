@@ -63,7 +63,7 @@
 
 <script>
 import { getCollegeSelect } from "@api/college.js";
-import { addMajor } from "@api/major.js";
+import { addMajor, editMajor } from "@api/major.js";
 export default {
   props: [],
   async mounted() {
@@ -106,8 +106,7 @@ export default {
         if (valid) {
           let result;
           if (this.$route.params.flag) {
-            // result = await editCollege(this.collegeObj);
-            console.log(1);
+            result = await editMajor(this.majorObj);
           } else {
             result = await addMajor(this.majorObj);
           }

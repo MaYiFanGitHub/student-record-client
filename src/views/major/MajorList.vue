@@ -113,7 +113,7 @@
 
 <script>
 import { getCollegeSelect } from "@api/college.js";
-import { getAllMajor } from "@api/major.js";
+import { getAllMajor, removeMajor } from "@api/major.js";
 export default {
   async mounted() {
     // 查询所有学院
@@ -156,11 +156,15 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
+          .then(async () => {
+            const result = await removeMajor(row.specialty);
+            if (result) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.queryMajor();
+            }
           })
           .catch(() => {
             this.$message({
