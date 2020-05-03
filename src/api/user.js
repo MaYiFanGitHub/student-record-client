@@ -15,6 +15,9 @@ export const getAllUser = (
 export const addUser = user => ajax.post("/user/add", user);
 // 添加用户
 export const addMoreUser = userList => ajax.post("/user/addMore", userList);
+// 添加用户
+export const addMoreTeacher = userList =>
+  ajax.post("/user/addTeacher", userList);
 // 修改用户
 export const editUser = user => ajax.post("/user/edit", user);
 // 删除用户

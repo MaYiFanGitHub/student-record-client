@@ -61,6 +61,13 @@ export default {
     "$route.path"() {
       this.$openMenu();
     }
+  },
+  computed: {
+    showMenuList() {
+      let userMenuList = JSON.parse(this.$store.state.userInfo.role_rank || []);
+      console.log(userMenuList);
+      return menuList;
+    }
   }
 };
 </script>
