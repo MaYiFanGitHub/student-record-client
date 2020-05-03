@@ -20,3 +20,5 @@ export const removeCollege = college_id =>
 
 // 获取所有学院
 export const getCollegeSelect = () => ajax.get("/college/select");
+// 查询学院的所属专业
+export const queryMajor = () => ajax.get("/college/selectByMajor");

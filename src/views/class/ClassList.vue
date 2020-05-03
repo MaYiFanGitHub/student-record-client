@@ -3,20 +3,39 @@
     <div class="user-list-header">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="所属学院">
-          <el-input
-            v-model="formInline.user"
-            placeholder="请选择所属学院"
-          ></el-input>
+          <el-select
+            v-model="formInline.college_id"
+            placeholder="请选择"
+            style="width:100%"
+            @change="collegeChange"
+          >
+            <el-option label="全部" value="all"></el-option>
+            <el-option
+              v-for="college in collegeList"
+              :key="college.college_id"
+              :label="college.college_name"
+              :value="college.college_id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="所属专业">
-          <el-input
-            v-model="formInline.user"
-            placeholder="请选择所属专业"
-          ></el-input>
+          <el-select
+            v-model="formInline.specialty"
+            placeholder="请选择"
+            style="width:100%"
+          >
+            <el-option label="全部" value="all"></el-option>
+            <el-option
+              v-for="major in majorList"
+              :key="major.specialty"
+              :label="major.specialty_name"
+              :value="major.specialty"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="班级名称">
           <el-input
-            v-model="formInline.user"
+            v-model="formInline.class_name"
             placeholder="请输入班级名称"
           ></el-input>
         </el-form-item>
@@ -26,24 +45,29 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table :data="collegeList" stripe style="width: 100%">
+      <el-table
+        :data="classList"
+        stripe
+        style="width: 100%"
+        v-loading="loading"
+      >
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-form-item label="班级ID">
-                <span>{{ props.row.college_id }}</span>
+                <span>{{ props.row.class_id }}</span>
               </el-form-item>
               <el-form-item label="所属学院">
                 <span>{{ props.row.college_name }}</span>
               </el-form-item>
               <el-form-item label="所属专业">
-                <span>{{ props.row.college_name }}</span>
+                <span>{{ props.row.specialty_name }}</span>
               </el-form-item>
               <el-form-item label="班级名称">
-                <span>{{ props.row.college_desc }}</span>
+                <span>{{ props.row.class_name }}</span>
               </el-form-item>
               <el-form-item label="班主任">
-                <span>{{ props.row.college_desc }}</span>
+                <span>{{ props.row.user_name }}</span>
               </el-form-item>
             </el-form>
           </template>
@@ -55,7 +79,7 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="college_id"
+          prop="class_id"
           label="班级ID"
           align="center"
           min-width="150"
@@ -68,19 +92,19 @@
         >
         </el-table-column>
         <el-table-column
-          prop="college_tel"
+          prop="specialty_name"
           label="所属专业"
           align="center"
-          min-width="150"
+          min-width="80"
         ></el-table-column>
         <el-table-column
-          prop="college_tel"
+          prop="class_name"
           label="班级名称"
           align="center"
           min-width="150"
         ></el-table-column>
         <el-table-column
-          prop="college_tel"
+          prop="user_name"
           label="班主任"
           align="center"
           min-width="150"
@@ -106,9 +130,13 @@
       </el-table>
       <el-pagination
         background
-        :hide-on-single-page="true"
-        layout="prev, pager, next"
-        :total="1000"
+        layout="total, prev, pager, next, sizes"
+        :total="page.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page.currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="page.pageSize"
       >
       </el-pagination>
     </div>
@@ -116,30 +144,50 @@
 </template>
 
 <script>
+import { queryMajor } from "@api/college";
+import { getAllClass, removeClass } from "@api/class";
 export default {
+  mounted() {
+    queryMajor().then(res => (this.collegeList = res));
+    this.queryClass();
+  },
   data() {
     return {
       formInline: {
-        user: "",
-        region: ""
+        college_id: "all",
+        class_name: "",
+        specialty: "all"
       },
-      collegeList: [
-        {
-          college_id: "12345",
-          college_name: "体育学院",
-          college_desc: "描述描述描述描述描述描述描述描述",
-          college_email: "mayifan_1@163.com",
-          college_room: "北B312",
-          college_tel: "13700000000",
-          user_name: "张三",
-          user_id: 0
-        }
-      ]
+      collegeList: [],
+      majorList: [],
+      classList: [],
+      page: {
+        pageSize: 10, //每页的数据条数
+        currentPage: 1, // 当前页
+        total: 1
+      },
+      loading: false
     };
   },
   methods: {
+    async queryClass() {
+      const { currentPage, pageSize } = this.page;
+      const { college_id, class_name, specialty } = this.formInline;
+      this.loading = true;
+      const result = await getAllClass(
+        currentPage,
+        pageSize,
+        college_id,
+        class_name,
+        specialty
+      );
+      this.classList = result.classList;
+      this.page = result.page;
+      this.loading = false;
+    },
     onSubmit() {
-      console.log("submit!");
+      this.page.currentPage = 1;
+      this.queryClass();
     },
     handleClick(row, flag) {
       if (flag) {
@@ -155,11 +203,16 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
+          .then(async () => {
+            const result = await removeClass(row.class_id);
+            if (result) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.page.currentPage = 1;
+              this.queryClass();
+            }
           })
           .catch(() => {
             this.$message({
@@ -168,8 +221,25 @@ export default {
             });
           });
       }
+    },
+    handleSizeChange(val) {
+      this.page.currentPage = 1;
+      this.page.pageSize = val;
+      this.queryClass();
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val;
+      this.queryClass();
+    },
+    collegeChange(params) {
+      console.log(params);
+      this.majorList = this.collegeList.find(
+        college => college.college_id === params
+      )["majorList"];
+      this.formInline.specialty = "all";
     }
   },
+  computed: {},
   components: {}
 };
 </script>
