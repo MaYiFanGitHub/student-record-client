@@ -1,4 +1,8 @@
-import { RECEIVE_ROLL_ALL, RECEIVE_USER_COLLEGE } from "./mutations_type";
+import {
+  RECEIVE_ROLL_ALL,
+  RECEIVE_USER_COLLEGE,
+  LOGIN
+} from "./mutations_type";
 
 import { getAllRole } from "@api/role.js";
 import { findUserByCollege } from "@api/user.js";
@@ -13,5 +17,9 @@ export default {
   async getUserCollege({ commit }) {
     const result = await findUserByCollege();
     commit(RECEIVE_USER_COLLEGE, result);
+  },
+  // 登录
+  async login({ commit }, userInfo) {
+    commit(LOGIN, userInfo);
   }
 };

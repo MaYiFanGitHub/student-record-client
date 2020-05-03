@@ -39,6 +39,9 @@ import Footer from "@c/footer/Footer";
 
 export default {
   created() {
+    if (!this.$store.state.userInfo.user_id) {
+      this.$router.replace("/login");
+    }
     this.getBreadList();
   },
   data() {

@@ -33,7 +33,7 @@
               ></el-input>
             </el-form-item>
             <el-form-item prop="role">
-              <el-radio v-model="loginForm.role" :label="1">管理员</el-radio>
+              <el-radio v-model="loginForm.role" :label="0">管理员</el-radio>
               <el-radio v-model="loginForm.role" :label="2">院长</el-radio>
               <el-radio v-model="loginForm.role" :label="3">教师</el-radio>
               <el-radio v-model="loginForm.role" :label="4">学生</el-radio>
@@ -51,13 +51,19 @@
 </template>
 
 <script>
+import { login } from "@api/user";
 export default {
+  created() {
+    if (this.$store.state.userInfo.user_id) {
+      this.$router.replace("/welcome");
+    }
+  },
   data() {
     return {
       loginForm: {
         username: "",
         password: "",
-        role: 1
+        role: 0
       },
       rules: {
         username: { required: true, message: "请输入用户名", trigger: "blur" },
@@ -67,9 +73,24 @@ export default {
   },
   methods: {
     login() {
-      this.$refs["userObj"].validate(valid => {
+      this.$refs["loginForm"].validate(async valid => {
         if (valid) {
-          alert("登陆成功!");
+          const { username, password, role } = this.loginForm;
+          const result = await login(username, password, role);
+          console.log(valid);
+          if (result) {
+            this.$message({
+              type: "success",
+              message: "登录成功"
+            });
+            this.$store.dispatch("login", result);
+            this.$router.replace("/welcome");
+          } else {
+            this.$message({
+              type: "error",
+              message: "登录失败"
+            });
+          }
         } else {
           return false;
         }

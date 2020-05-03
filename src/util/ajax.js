@@ -15,7 +15,7 @@ axios.interceptors.response.use(
       return result.data || true;
     } else {
       // 请求失败
-      return Promise.reject(result);
+      return false;
     }
   },
   error => {

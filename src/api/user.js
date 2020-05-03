@@ -22,3 +22,8 @@ export const removeUser = user_username =>
   ajax.get("/user/remove", { params: { user_username } });
 // 查询院长
 export const findUserByCollege = () => ajax.get("/user/findDean");
+// 登录
+export const login = (user_username, user_password, role_id) =>
+  ajax.post("/user/login", { user_username, user_password, role_id });
+// 退出
+export const logout = () => ajax.get("/user/logout");
