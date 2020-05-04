@@ -8,7 +8,7 @@
     >
       <el-page-header
         @back="goBack"
-        content="学院编辑"
+        content="班级编辑"
         v-if="$route.params.flag"
       >
       </el-page-header>

@@ -34,9 +34,9 @@
             </el-form-item>
             <el-form-item prop="role">
               <el-radio v-model="loginForm.role" :label="0">管理员</el-radio>
-              <el-radio v-model="loginForm.role" :label="2">院长</el-radio>
-              <el-radio v-model="loginForm.role" :label="3">教师</el-radio>
-              <el-radio v-model="loginForm.role" :label="4">学生</el-radio>
+              <el-radio v-model="loginForm.role" :label="1">院长</el-radio>
+              <el-radio v-model="loginForm.role" :label="2">教师</el-radio>
+              <el-radio v-model="loginForm.role" :label="3">学生</el-radio>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" round @click="login('loginForm')"

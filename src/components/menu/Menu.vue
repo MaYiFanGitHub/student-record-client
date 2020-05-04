@@ -1,6 +1,6 @@
 <template>
   <el-menu :default-active="menuActive" class="el-menu-vertical-demo" router>
-    <label v-for="menu in menuList" :key="menu.id">
+    <label v-for="menu in userMenuList" :key="menu.id">
       <!-- 下拉菜单 -->
       <el-submenu :index="menu.id" v-if="menu.children">
         <template slot="title">
@@ -31,11 +31,16 @@ import menuList from "./menuConfig";
 export default {
   data() {
     return {
-      menuList,
-      menuActive: "welcome"
+      userMenuList: [],
+      menuActive: "welcome",
+      userMenus: []
     };
   },
   mounted() {
+    let menuObjList = JSON.parse(this.$store.state.userInfo.role_rank);
+    this.userMenus = menuObjList.map(item => item.id);
+    let res = this.getMenuNodes(menuList);
+    this.userMenuList = res;
     this.$openMenu();
   },
   methods: {
@@ -55,6 +60,40 @@ export default {
           }
         }
       });
+    },
+    hasAuth(item) {
+      // 判断当前登陆用户是否有对item的权限
+      const menus = this.userMenus;
+      if (item.id === "/welcome" || menus.indexOf(item.id) !== -1) {
+        return true;
+      } else if (item.children) {
+        const cItem = item.children.find(
+          cItem => menus.indexOf(cItem.id) !== -1
+        );
+        return !!cItem;
+      }
+      return false;
+    },
+    getMenuNodes(menuList) {
+      return menuList.reduce((pre, item) => {
+        if (this.hasAuth(item)) {
+          if (!item.children) {
+            pre.push({
+              id: item.id,
+              title: item.title,
+              icon: item.icon
+            });
+          } else {
+            pre.push({
+              id: item.id,
+              title: item.title,
+              icon: item.icon,
+              children: this.getMenuNodes(item.children)
+            });
+          }
+        }
+        return pre;
+      }, []);
     }
   },
   watch: {

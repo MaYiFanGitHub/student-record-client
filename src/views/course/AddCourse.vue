@@ -29,7 +29,7 @@
           </div>
           <el-table
             ref="multipleTable"
-            :data="userList"
+            :data="courseList"
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange"
@@ -40,107 +40,116 @@
               width="50"
               type="index"
             ></el-table-column>
-            <el-table-column label="用户名" min-width="170" align="center">
+            <el-table-column label="课程名称" min-width="170" align="center">
               <template slot-scope="scope"
-                ><el-input v-model="scope.row.user_username"></el-input
+                ><el-input v-model="scope.row.course_name"></el-input
               ></template>
             </el-table-column>
-            <el-table-column label="密码" min-width="170" align="center">
+            <el-table-column label="课时" min-width="170" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.user_password"></el-input>
+                <el-input v-model="scope.row.course_hour"></el-input>
               </template>
             </el-table-column>
-            <el-table-column label="权限" min-width="170" align="center">
+            <el-table-column label="上课地点" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.course_classroom"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="学分" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.course_credit"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="开课学年"
+              min-width="270"
+              align="center"
+              class="year-ipt"
+            >
+              <template slot-scope="scope">
+                <el-col :span="11">
+                  <el-date-picker
+                    format="yyyy"
+                    value-format="yyyy"
+                    v-model="scope.row.course_year_begin"
+                    type="year"
+                    style="width:100%"
+                  >
+                  </el-date-picker>
+                </el-col>
+                <el-col :span="2">
+                  <div style="text-align:center">-</div>
+                </el-col>
+                <el-col :span="11">
+                  <el-date-picker
+                    format="yyyy"
+                    value-format="yyyy"
+                    v-model="scope.row.course_year_end"
+                    type="year"
+                    style="width:100%"
+                  >
+                  </el-date-picker>
+                </el-col>
+              </template>
+            </el-table-column>
+            <el-table-column label="课容量" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.course_amount"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="课程类型" min-width="200" align="center">
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.role_id"
-                  placeholder="请选择"
+                  v-model="scope.row.course_type"
+                  placeholder="请选择课程类型"
                   style="width:100%"
                 >
-                  <el-option label="管理员" :value="0"></el-option>
-                  <el-option label="院长" :value="1"></el-option>
-                  <el-option label="教师" :value="2"></el-option>
-                  <el-option label="学生" :value="3"></el-option>
+                  <el-option
+                    label="限制性选修课"
+                    value="限制性选修课"
+                  ></el-option>
+                  <el-option
+                    label="非限制性选修课"
+                    value="非限制性选修课"
+                  ></el-option>
+                  <el-option label="公共必修课" value="公共必修课"></el-option>
+                  <el-option label="公共选修课" value="公共选修课"></el-option>
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="姓名" min-width="170" align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.user_name"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="曾用名" min-width="170" align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.user_last_name"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="性别" min-width="170" align="center">
-              <template slot-scope="scope">
-                <el-radio v-model="scope.row.user_sex" label="男">男</el-radio>
-                <el-radio v-model="scope.row.user_sex" label="女">女</el-radio>
-              </template>
-            </el-table-column>
-            <el-table-column label="年龄" min-width="100" align="center">
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.user_age"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="民族" min-width="170" align="center">
+            <el-table-column label="考核方式" min-width="170" align="center">
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.user_nation"
+                  v-model="scope.row.course_assess"
+                  placeholder="请选择考核方式"
+                  style="width:100%"
+                >
+                  <el-option label="考查" value="考查"></el-option>
+                  <el-option label="考试" value="考试"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="授课教师" min-width="170" align="center">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.teahcher_id"
                   placeholder="请选择民族"
                   style="width:100%"
                 >
                   <el-option label="汉族" value="汉族"></el-option>
                   <el-option label="土家族" value="土家族"></el-option>
-                  <el-option label="蒙古族" value="蒙古族"></el-option>
-                  <el-option label="回族" value="回族"></el-option>
-                  <el-option label="苗族" value="苗族"></el-option>
-                  <el-option label="满族" value="满族"></el-option>
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="手机" min-width="170" align="center">
+            <el-table-column label="课程简介" min-width="170" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.user_tel"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="出生日期" min-width="170" align="center">
-              <template slot-scope="scope">
-                <el-date-picker
-                  v-model="scope.row.user_birthday"
-                  type="date"
-                  placeholder="选择日期"
-                  style="width:100%"
+                <el-input
+                  type="textarea"
+                  :rows="2"
+                  placeholder="请输入内容"
+                  v-model="scope.row.course_info"
                 >
-                </el-date-picker>
-              </template>
-            </el-table-column>
-            <el-table-column label="籍贯" min-width="170" align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.user_address"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="健康状况" min-width="170" align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.user_heath"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="文化程度" min-width="170" align="center">
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.user_culture"
-                  placeholder="请选择"
-                  style="width:100%"
-                >
-                  <el-option label="小学" value="小学"></el-option>
-                  <el-option label="初中" value="初中"></el-option>
-                  <el-option label="高中" value="高中"></el-option>
-                  <el-option label="本科" value="本科"></el-option>
-                  <el-option label="研究生" value="研究生"></el-option>
-                  <el-option label="博士" value="博士"></el-option>
-                </el-select>
+                </el-input>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
@@ -151,14 +160,14 @@
                   size="mini"
                   circle
                   @click="addOrRemove(scope, true)"
-                  :disabled="userList.length === 1"
+                  :disabled="courseList.length === 1"
                 ></el-button>
                 <el-button
                   type="primary"
                   icon="el-icon-plus"
                   size="mini"
                   circle
-                  v-if="scope.$index === userList.length - 1"
+                  v-if="scope.$index === courseList.length - 1"
                   @click="addOrRemove(scope, false)"
                 ></el-button>
               </template>
@@ -181,7 +190,7 @@ import XLSX from "xlsx";
 export default {
   data() {
     return {
-      userList: [{}],
+      courseList: [{}],
       multipleSelection: [],
       activeName: "second",
       file: []
@@ -196,23 +205,23 @@ export default {
     addOrRemove(scope, flag) {
       if (flag) {
         // 删除
-        if (this.userList.length !== 1) {
-          this.userList.splice(scope.$index, 1);
+        if (this.courseList.length !== 1) {
+          this.courseList.splice(scope.$index, 1);
         }
       } else {
         // 添加
-        this.userList.push({});
+        this.courseList.push({});
       }
     },
     // 批量删除
     allDelete() {
-      const res = this.userList.filter(
+      const res = this.courseList.filter(
         item => this.multipleSelection.indexOf(item) === -1
       );
-      this.userList = res;
+      this.courseList = res;
 
-      if (this.userList.length === 0) {
-        this.userList.push({});
+      if (this.courseList.length === 0) {
+        this.courseList.push({});
       }
     },
     // 读取文件
@@ -245,7 +254,7 @@ export default {
                 user_culture: item["文化程度"]
               };
             });
-            this.userList.push(...res);
+            this.courseList.push(...res);
           }
         } catch (e) {
           this.$message.warning("文件类型不正确！");
@@ -255,7 +264,7 @@ export default {
     },
     // 重置
     resetClick() {
-      this.userList = [{}];
+      this.courseList = [{}];
       this.multipleSelection = [];
     }
   },
