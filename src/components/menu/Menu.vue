@@ -37,8 +37,9 @@ export default {
     };
   },
   mounted() {
-    let menuObjList = JSON.parse(this.$store.state.userInfo.role_rank);
-    this.userMenus = menuObjList.map(item => item.id);
+    // let menuObjList = JSON.parse(this.$store.state.userInfo.role_rank);
+    this.userMenus = JSON.parse(this.$store.state.userInfo.role_rank);
+    console.log(this.userMenus);
     let res = this.getMenuNodes(menuList);
     this.userMenuList = res;
     this.$openMenu();

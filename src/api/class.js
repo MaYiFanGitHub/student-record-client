@@ -18,3 +18,5 @@ export const editClass = classObj => ajax.post("/class/edit", classObj);
 // 删除班级
 export const removeClass = class_id =>
   ajax.get("/class/remove", { params: { class_id } });
+// 获取所有班级
+export const queryClassAll = () => ajax.get("/class/queryList");

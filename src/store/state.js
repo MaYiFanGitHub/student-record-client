@@ -1,5 +1,7 @@
 export default {
   roleList: [],
   userCollegeList: [],
-  userInfo: {}
+  userInfo: {},
+  politicsList: [],
+  classList: []
 };

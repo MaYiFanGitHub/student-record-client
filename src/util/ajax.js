@@ -1,7 +1,7 @@
 import axios from "axios";
 
 axios.defaults.baseURL = "//localhost:3000/api";
-
+axios.defaults.withCredentials = true;
 axios.interceptors.request.use(config => {
   return config;
 });

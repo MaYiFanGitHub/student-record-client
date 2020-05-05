@@ -1,7 +1,9 @@
 import {
   RECEIVE_ROLL_ALL,
   RECEIVE_USER_COLLEGE,
-  LOGIN
+  LOGIN,
+  QUERY_POLITICS,
+  QUERY_CLASS
 } from "./mutations_type";
 
 export default {
@@ -16,5 +18,13 @@ export default {
   // 登录
   [LOGIN](state, userInfo) {
     state.userInfo = userInfo;
+  },
+  // 获取政治面貌字典表
+  [QUERY_POLITICS](state, politicsList) {
+    state.politicsList = politicsList;
+  },
+  // 获取政治面貌字典表
+  [QUERY_CLASS](state, classList) {
+    state.classList = classList;
   }
 };

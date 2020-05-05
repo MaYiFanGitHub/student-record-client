@@ -141,6 +141,72 @@
             </el-select>
           </template>
         </el-table-column>
+        <el-table-column label="政治面貌" min-width="170" align="center">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.politics_status_id"
+              placeholder="请选择政治面貌"
+              style="width:100%"
+            >
+              <el-option
+                :label="role.politics_status"
+                :value="role.politics_status_id"
+                v-for="role in $store.state.politicsList"
+                :key="role.politics_status_id"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属学院" min-width="170" align="center">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.college_id"
+              placeholder="请选择所属学院"
+              style="width:100%"
+              @change="collegeChange(scope)"
+            >
+              <el-option
+                v-for="college in collegeList"
+                :key="college.college_id"
+                :label="college.college_name"
+                :value="college.college_id"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属专业" min-width="170" align="center">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.specialty"
+              placeholder="请选择"
+              style="width:100%"
+              @change="marjorChange(scope)"
+            >
+              <el-option
+                v-for="major in majorList"
+                :key="major.specialty"
+                :label="major.specialty_name"
+                :value="major.specialty"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属班级" min-width="170" align="center">
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.class_id"
+              placeholder="请选择班级"
+              style="width:100%"
+            >
+              <el-option
+                v-for="item in classList"
+                :key="item.class_id"
+                :label="item.class_name"
+                :value="item.class_id"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope">
             <el-button
@@ -174,10 +240,12 @@
 <script>
 import XLSX from "xlsx";
 import { mapState } from "vuex";
-import { addMoreUser } from "@api/user";
+import { addMoreStudent } from "@api/user";
+import { queryMajor } from "@api/college";
 export default {
   mounted() {
     this.$store.dispatch("getAllRoll");
+    queryMajor().then(res => (this.collegeList = res));
   },
   data() {
     return {
@@ -185,10 +253,31 @@ export default {
       multipleSelection: [],
       activeName: "second",
       file: [],
-      loading: false
+      loading: false,
+      collegeList: [],
+      majorList: [],
+      classList: []
     };
   },
   methods: {
+    collegeChange(params) {
+      this.majorList = Object.assign(
+        {},
+        this.collegeList.find(
+          college => college.college_id === params.row.college_id
+        )["majorList"]
+      );
+      this.$set(this.userList[params.$index], "specialty", "");
+    },
+    marjorChange(params) {
+      this.classList = Object.assign(
+        {},
+        this.$store.state.classList.filter(
+          item => item.specialty === params.row.specialty
+        )
+      );
+      this.$set(this.userList[params.$index], "class_id", "");
+    },
     // 表格复选框回调
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -217,7 +306,7 @@ export default {
       }
     },
     async addMoreUser() {
-      const result = await addMoreUser(this.userList);
+      const result = await addMoreStudent(this.userList);
       if (result) {
         this.$message({
           type: "success",

@@ -18,6 +18,9 @@ export const addMoreUser = userList => ajax.post("/user/addMore", userList);
 // 添加多个教师、教秘用户
 export const addMoreTeacher = userList =>
   ajax.post("/user/addTeacher", userList);
+// 添加学生
+export const addMoreStudent = userList =>
+  ajax.post("/user/addStudent", userList);
 // 修改用户
 export const editUser = user => ajax.post("/user/edit", user);
 // 删除用户

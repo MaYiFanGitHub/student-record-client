@@ -1,16 +1,21 @@
 import {
   RECEIVE_ROLL_ALL,
   RECEIVE_USER_COLLEGE,
-  LOGIN
+  LOGIN,
+  QUERY_POLITICS,
+  QUERY_CLASS
 } from "./mutations_type";
 
 import { getAllRole } from "@api/role.js";
 import { findUserByCollege } from "@api/user.js";
+import { queryPolitics } from "@api/politics";
+import { queryClassAll } from "@api/class";
 
 export default {
   // 获取所有角色
   async getAllRoll({ commit }) {
-    const result = await getAllRole();
+    let result = await getAllRole();
+    result.forEach(item => (item.role_rank = JSON.parse(item.role_rank)));
     commit(RECEIVE_ROLL_ALL, result);
   },
   // 获取院长身份的角色
@@ -21,5 +26,15 @@ export default {
   // 登录
   async login({ commit }, userInfo) {
     commit(LOGIN, userInfo);
+  },
+  // 获取所有政治面貌字典表
+  async getAllPolitics({ commit }) {
+    let result = await queryPolitics();
+    commit(QUERY_POLITICS, result);
+  },
+  // 获取所有班级
+  async getAllClass({ commit }) {
+    let result = await queryClassAll();
+    commit(QUERY_CLASS, result);
   }
 };

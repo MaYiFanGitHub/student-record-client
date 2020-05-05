@@ -6,7 +6,12 @@
       >
     </div>
     <div class="content">
-      <el-table :data="roleList" border style="width: 100%" v-loading="loading">
+      <el-table
+        :data="$store.state.roleList"
+        border
+        style="width: 100%"
+        v-loading="loading"
+      >
         <el-table-column
           label="序号"
           width="100"
@@ -23,7 +28,7 @@
               v-for="item in scope.row.role_rank"
               :key="item.id"
               style="margin:3px"
-              >{{ item.title }}</el-tag
+              >{{ item | rankLabel }}</el-tag
             >
           </template>
         </el-table-column>
@@ -81,6 +86,19 @@
 import MenuList from "@c/menu/menuConfig.js";
 import { addRole, editRole, removeRole } from "@api/role.js";
 
+const arrMenu = [];
+const arrMenuObj = {};
+MenuList.forEach(item => {
+  if (item.children) {
+    arrMenu.push({ id: item.id, title: item.title }, ...item.children);
+  } else {
+    arrMenu.push(item);
+  }
+});
+arrMenu.forEach(item => {
+  arrMenuObj[item.id] = item.title;
+});
+console.log(arrMenuObj);
 export default {
   data() {
     return {
@@ -110,14 +128,9 @@ export default {
         // 编辑
         this.dialogVisible = true;
         this.isEdit = true;
-        // this.editUserObj = Object.assign({}, row);
-        let keys = row.role_rank.reduce((pre, item) => {
-          pre.push(item.id);
-          return pre;
-        }, []);
 
         this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(keys);
+          this.$refs.tree.setCheckedKeys(row.role_rank);
           this.role = {
             role_id: row.role_id,
             role_name: row.role_name,
@@ -145,7 +158,7 @@ export default {
       }
     },
     nodeClick(a, b) {
-      this.role.role_rank = JSON.stringify(b.checkedNodes);
+      this.role.role_rank = JSON.stringify(b.checkedKeys);
     },
     addRoleDialog() {
       this.isEdit = false;
@@ -184,24 +197,10 @@ export default {
       this.handleClose();
     }
   },
-  computed: {
-    roleList() {
-      const roleList = this.$store.state.roleList || [];
-      roleList.forEach(role => {
-        let menuList;
-        if (typeof role.role_rank === "string") {
-          menuList = JSON.parse(role.role_rank || []);
-        } else {
-          menuList = role.role_rank;
-        }
-        role.role_rank = menuList.reduce((pre, menuItem) => {
-          if (!menuItem.children) {
-            pre.push({ title: menuItem.title, id: menuItem.id });
-          }
-          return pre;
-        }, []);
-      });
-      return roleList;
+  filters: {
+    rankLabel(value) {
+      console.log(value);
+      return arrMenuObj[value];
     }
   }
 };

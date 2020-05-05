@@ -4,19 +4,39 @@
       <el-tab-pane label="添加单个用户" name="first">
         <UserForm :roleList="roleList"></UserForm>
       </el-tab-pane>
-      <el-tab-pane label="批量导入管理员" name="second">
+      <el-tab-pane
+        label="批量导入管理员"
+        name="second"
+        v-if="$store.state.userInfo.role_id === 0"
+      >
         <AddManager></AddManager>
       </el-tab-pane>
-      <el-tab-pane label="批量导入院长" name="three">
+      <el-tab-pane
+        label="批量导入院长"
+        name="three"
+        v-if="$store.state.userInfo.role_id === 0"
+      >
         <AddDean></AddDean>
       </el-tab-pane>
-      <el-tab-pane label="批量导入教师" name="four">
+      <el-tab-pane
+        label="批量导入教师"
+        name="four"
+        v-if="$store.state.userInfo.role_id === 4"
+      >
         <AddTeacher></AddTeacher>
       </el-tab-pane>
-      <el-tab-pane label="批量导入教秘" name="five">
+      <el-tab-pane
+        label="批量导入教秘"
+        name="five"
+        v-if="$store.state.userInfo.role_id === 1"
+      >
         <AddTeacherSec></AddTeacherSec>
       </el-tab-pane>
-      <el-tab-pane label="批量导入学生" name="six">
+      <el-tab-pane
+        label="批量导入学生"
+        name="six"
+        v-if="$store.state.userInfo.role_id === 4"
+      >
         <AddStudent></AddStudent>
       </el-tab-pane>
     </el-tabs>
@@ -41,7 +61,7 @@ export default {
     return {
       userList: [{}],
       multipleSelection: [],
-      activeName: "second",
+      activeName: "first",
       file: [],
       loading: false
     };

@@ -13,7 +13,7 @@
             <el-option
               :label="role.role_name"
               :value="role.role_id"
-              v-for="role in roleList"
+              v-for="role in roleListComputed"
               :key="role.role_id"
             ></el-option>
           </el-select>
@@ -30,13 +30,98 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table
-        :data="userList"
-        stripe
-        style="width: 100%"
-        border
-        v-loading="loading"
-      >
+      <el-table :data="userList" stripe style="width: 100%" v-loading="loading">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-col :span="5">
+                <el-form-item label="用户名">
+                  <span>{{ props.row.user_username }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="权限">
+                  <span>{{ props.row.role_name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="姓名">
+                  <span>{{ props.row.user_name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="曾用名">
+                  <span>{{ props.row.user_last_name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="性别">
+                  <span>{{ props.row.user_sex }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="年龄">
+                  <span>{{ props.row.user_age }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="民族">
+                  <span>{{ props.row.user_nation }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="手机">
+                  <span>{{ props.row.user_tel }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="出生日期">
+                  <span>{{ props.row.user_birthday }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="籍贯">
+                  <span>{{ props.row.user_address }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="健康状况">
+                  <span>{{ props.row.user_heath }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="文化程度">
+                  <span>{{ props.row.user_culture }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5" v-if="props.row.politics_status">
+                <el-form-item label="政治面貌">
+                  <span>{{ props.row.politics_status }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5" v-if="props.row.college_name">
+                <el-form-item label="所属学院">
+                  <span>{{ props.row.college_name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5" v-if="props.row.specialty_name">
+                <el-form-item label="所属专业">
+                  <span>{{ props.row.specialty_name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5" v-if="props.row.class_name">
+                <el-form-item label="所属班级">
+                  <span>{{ props.row.class_name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5" v-if="props.row.teacher_title">
+                <el-form-item label="职称">
+                  <span>{{ props.row.teacher_title }}</span>
+                </el-form-item>
+              </el-col>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column
           label="id"
           width="50"
@@ -237,8 +322,10 @@ export default {
     handleClick(row, flag) {
       if (flag) {
         // 编辑
-        this.dialogVisible = true;
-        this.editUserObj = Object.assign({}, row);
+        this.$router.push({
+          name: "userEdit",
+          params: { flag: true, data: row }
+        });
       } else {
         // 删除
         this.$confirm("确定要删除此记录吗？是否继续?", "提示", {
@@ -290,6 +377,28 @@ export default {
         { role_id: -1, role_name: "全部" },
         ...this.$store.state.roleList
       ];
+    },
+    roleListComputed() {
+      const role_id = this.$store.state.userInfo.role_id;
+      let res = this.roleList.filter(item => {
+        if (role_id === 0) {
+          // 管理员
+          if (item.role_id === 0 || item.role_id === 1) {
+            return true;
+          }
+        } else if (role_id === 1) {
+          // 院长
+          if (item.role_id === 4) {
+            return true;
+          }
+        } else if (role_id === 4) {
+          // 教秘
+          if (item.role_id === 2 || item.role_id === 3) {
+            return true;
+          }
+        }
+      });
+      return [{ role_id: -1, role_name: "全部" }, ...res];
     }
   },
   components: {

@@ -12,6 +12,7 @@ import Role from "@v/role/Role.vue";
 import UserIndex from "@v/user/Index.vue";
 import UserList from "@v/user/UserList.vue";
 import AddUser from "@v/user/AddUser.vue";
+import UserForm from "@v/user/UserForm.vue";
 
 // 学院模块
 import CollegeIndex from "@v/college/Index.vue";
@@ -83,6 +84,14 @@ const routes = [
               name: "用户添加"
             },
             component: AddUser
+          },
+          {
+            path: "/user/userEdit",
+            name: "userEdit",
+            meta: {
+              name: "用户编辑"
+            },
+            component: UserForm
           }
         ]
       },

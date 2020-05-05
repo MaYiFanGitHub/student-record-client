@@ -6,6 +6,10 @@
 
 <script>
 export default {
+  mounted() {
+    this.$store.dispatch("getAllPolitics");
+    this.$store.dispatch("getAllClass");
+  },
   data() {
     return {};
   }
