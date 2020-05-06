@@ -2,7 +2,7 @@
   <div class="user-add">
     <el-tabs v-model="activeName">
       <el-tab-pane label="添加单个课程" name="first">
-        <UserForm></UserForm>
+        <CourseForm></CourseForm>
       </el-tab-pane>
       <el-tab-pane label="批量导入课程" name="second">
         <div class="user-add-header cl">
@@ -132,12 +132,16 @@
             <el-table-column label="授课教师" min-width="170" align="center">
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.teahcher_id"
-                  placeholder="请选择民族"
+                  v-model="scope.row.teacher_id"
+                  placeholder="请选择授课教师"
                   style="width:100%"
                 >
-                  <el-option label="汉族" value="汉族"></el-option>
-                  <el-option label="土家族" value="土家族"></el-option>
+                  <el-option
+                    :label="item.user_name"
+                    :value="item.teacher_id"
+                    v-for="item in $store.state.userTeacherList"
+                    :key="item.teacher_id"
+                  ></el-option>
                 </el-select>
               </template>
             </el-table-column>
@@ -175,7 +179,7 @@
           </el-table>
         </div>
         <div class="user-add-footer">
-          <el-button type="primary">提交</el-button>
+          <el-button type="primary" @click="submit">提交</el-button>
           &nbsp;&nbsp;
           <el-button @click="resetClick">重置</el-button>
         </div>
@@ -185,15 +189,25 @@
 </template>
 
 <script>
-import UserForm from "./UserForm";
+import CourseForm from "./CourseForm.vue";
+import { addMoreCourse } from "@api/course";
 import XLSX from "xlsx";
 export default {
+  mounted() {
+    this.$store.dispatch("getUserTeacher");
+    this.$store.state.userTeacherList.forEach(item => {
+      let key = item.teacher_id;
+      let val = item.user_name;
+      this.tutorList[val] = key;
+    });
+  },
   data() {
     return {
       courseList: [{}],
       multipleSelection: [],
-      activeName: "second",
-      file: []
+      activeName: "first",
+      file: [],
+      tutorList: {}
     };
   },
   methods: {
@@ -238,20 +252,20 @@ export default {
             //循环读取每个文件
             const sheetArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
             const res = sheetArray.map(item => {
+              let key = item["授课教师"];
+              console.log(this.tutorList[key]);
               return {
-                user_username: item["用户名"],
-                user_password: item["密码"],
-                role_id: item[Object.keys(item)[2]],
-                user_name: item["姓名"],
-                user_sex: item["性别"],
-                user_age: item["年龄"],
-                user_address: item["籍贯"],
-                user_nation: item["民族"],
-                user_tel: item["手机"],
-                user_birthday: this.$.formatDate(item["出生日期"]),
-                user_last_name: item["曾用名"],
-                user_heath: item["健康状况"],
-                user_culture: item["文化程度"]
+                course_name: item["课程名称"],
+                course_hour: item["课时"],
+                course_classroom: item["上课地点"],
+                course_credit: item["学分"],
+                course_year_begin: item["开课学年"].split("-")[0],
+                course_year_end: item["开课学年"].split("-")[1],
+                course_amount: item["课容量"],
+                course_type: item["课程类型"],
+                course_assess: item["考核方式"],
+                teacher_id: this.tutorList[key],
+                course_info: item["课程简介"]
               };
             });
             this.courseList.push(...res);
@@ -266,10 +280,20 @@ export default {
     resetClick() {
       this.courseList = [{}];
       this.multipleSelection = [];
+    },
+    async submit() {
+      let res = await addMoreCourse(this.courseList);
+      if (res) {
+        this.$message({
+          type: "success",
+          message: "添加成功!"
+        });
+        this.courseList = [{}];
+      }
     }
   },
   components: {
-    UserForm
+    CourseForm
   }
 };
 </script>

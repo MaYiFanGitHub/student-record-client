@@ -3,5 +3,6 @@ export default {
   userCollegeList: [],
   userInfo: {},
   politicsList: [],
-  classList: []
+  classList: [],
+  userTeacherList: []
 };

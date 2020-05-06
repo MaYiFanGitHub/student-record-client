@@ -6,6 +6,12 @@
       label-width="80px"
       :rules="rules"
     >
+      <el-page-header
+        @back="goBack"
+        content="班级编辑"
+        v-if="$route.params.flag"
+      >
+      </el-page-header>
       <el-col :span="8" :offset="2">
         <el-form-item label="课程名称" prop="course_name">
           <el-input v-model="courseObj.course_name"></el-input>
@@ -91,14 +97,18 @@
         </el-form-item>
       </el-col>
       <el-col :span="8" :offset="2">
-        <el-form-item label="授课教师" prop="teahcher_id">
+        <el-form-item label="授课教师" prop="teacher_id">
           <el-select
-            v-model="courseObj.teahcher_id"
-            placeholder="请选择民族"
+            v-model="courseObj.teacher_id"
+            placeholder="请选择授课教师"
             style="width:100%"
           >
-            <el-option label="汉族" value="汉族"></el-option>
-            <el-option label="土家族" value="土家族"></el-option>
+            <el-option
+              :label="item.user_name"
+              :value="item.teacher_id"
+              v-for="item in $store.state.userTeacherList"
+              :key="item.teacher_id"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -115,7 +125,9 @@
       </el-col>
       <el-col :span="21" :offset="2">
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">添加</el-button>
+          <el-button type="primary" @click="onSubmit">{{
+            $route.params.flag ? "提交" : "添加"
+          }}</el-button>
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-col>
@@ -124,11 +136,18 @@
 </template>
 
 <script>
+import { addCourse } from "@api/course";
 export default {
-  props: ["dialogVisible", "editUserObj"],
   mounted() {
-    if (this.editUserObj && this.editUserObj.role_id) {
-      this.courseObj = Object.assign({}, this.editUserObj);
+    const { flag, data } = this.$route.params;
+    if (flag) {
+      this.classObj = {
+        teacher_id: data.teacher_id,
+        specialty: data.specialty,
+        college_id: data.college_id,
+        class_name: data.class_name,
+        class_id: data.class_id
+      };
     }
   },
   data() {
@@ -144,7 +163,7 @@ export default {
         course_amount: "",
         course_type: "",
         course_assess: "",
-        teahcher_id: ""
+        teacher_id: ""
       },
 
       rules: {
@@ -193,7 +212,7 @@ export default {
           message: "请选择考核方式",
           trigger: "blur"
         },
-        teahcher_id: {
+        teacher_id: {
           required: true,
           message: "请选择授课教师",
           trigger: "blur"
@@ -203,19 +222,34 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$refs["courseObjForm"].validate(valid => {
+      this.$refs["courseObjForm"].validate(async valid => {
         if (valid) {
-          alert("submit!");
-          this.isSuccess = true;
-          return true;
-        } else {
-          this.isSuccess = false;
-          return false;
+          let result;
+          if (this.$route.params.flag) {
+            // result = await editClass(this.classObj);
+            console.log(111);
+          } else {
+            result = await addCourse(this.courseObj);
+          }
+
+          if (result) {
+            this.courseObj = {};
+            this.$message({
+              type: "success",
+              message: this.$route.params.flag ? "编辑成功!" : "添加成功!"
+            });
+          }
+          if (this.$route.params.flag) {
+            this.goBack();
+          }
         }
       });
     },
     resetForm() {
       this.$refs["courseObjForm"].resetFields();
+    },
+    goBack() {
+      this.$router.back();
     }
   },
   watch: {

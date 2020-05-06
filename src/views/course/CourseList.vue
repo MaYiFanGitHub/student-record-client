@@ -128,25 +128,10 @@
       >
       </el-pagination>
     </div>
-
-    <el-dialog title="修改用户信息" :visible.sync="dialogVisible" width="70%">
-      <userForm
-        :dialogVisible="dialogVisible"
-        :editUserObj="editUserObj"
-        ref="userFormEle"
-      ></userForm>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="handleCloseBtn(false)">取 消</el-button>
-        <el-button type="primary" @click="handleCloseBtn(true)"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import userForm from "./UserForm";
 export default {
   data() {
     return {
@@ -218,9 +203,7 @@ export default {
       }
     }
   },
-  components: {
-    userForm
-  }
+  components: {}
 };
 </script>
 

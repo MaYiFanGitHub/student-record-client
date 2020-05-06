@@ -3,11 +3,12 @@ import {
   RECEIVE_USER_COLLEGE,
   LOGIN,
   QUERY_POLITICS,
-  QUERY_CLASS
+  QUERY_CLASS,
+  RECEIVE_TEACHER_USER
 } from "./mutations_type";
 
 import { getAllRole } from "@api/role.js";
-import { findUserByCollege } from "@api/user.js";
+import { findUserByCollege, findTeacher } from "@api/user.js";
 import { queryPolitics } from "@api/politics";
 import { queryClassAll } from "@api/class";
 
@@ -36,5 +37,10 @@ export default {
   async getAllClass({ commit }) {
     let result = await queryClassAll();
     commit(QUERY_CLASS, result);
+  },
+  // 获取教师身份的角色
+  async getUserTeacher({ commit }) {
+    const result = await findTeacher();
+    commit(RECEIVE_TEACHER_USER, result);
   }
 };
