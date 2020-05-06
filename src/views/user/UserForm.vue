@@ -243,6 +243,20 @@ export default {
     if (flag) {
       data.college_id = data.student_college_id;
       this.userObj = data;
+      // 获取专业列表
+      this.majorList = Object.assign(
+        {},
+        this.collegeList.find(
+          college => college.college_id === this.userObj.student_college_id
+        )["majorList"]
+      );
+      // 获取班级列表
+      this.classList = Object.assign(
+        {},
+        this.$store.state.classList.filter(
+          item => item.specialty === this.userObj.specialty
+        )
+      );
     }
   },
   data() {
