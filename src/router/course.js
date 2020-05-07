@@ -1,6 +1,7 @@
 import CourseIndex from "@v/course/Index.vue";
 import CourseList from "@v/course/CourseList.vue";
 import AddCourse from "@v/course/AddCourse.vue";
+import CourseForm from "@v/course/CourseForm.vue";
 
 export default {
   path: "/course",
@@ -33,7 +34,7 @@ export default {
       meta: {
         name: "课程编辑"
       },
-      component: AddCourse
+      component: CourseForm
     }
   ]
 };

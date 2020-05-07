@@ -2,17 +2,74 @@
   <div class="user-list">
     <div class="user-list-header">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="用户名">
-          <el-input v-model="formInline.user" placeholder="用户名"></el-input>
-        </el-form-item>
-        <el-form-item label="权限">
-          <el-select v-model="formInline.region" placeholder="权限">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item label="所属学院">
+          <el-select
+            v-model="formInline.college_id"
+            placeholder="请选择"
+            style="width:100%"
+          >
+            <el-option label="全部" value="all"></el-option>
+            <el-option
+              v-for="college in collegeList"
+              :key="college.college_id"
+              :label="college.college_name"
+              :value="college.college_id"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="formInline.user" placeholder="姓名"></el-input>
+        <el-form-item label="开课学年">
+          <el-select
+            v-model="formInline.course_year"
+            placeholder="请选择"
+            style="width:100%"
+          >
+            <el-option label="全部" value="all"></el-option>
+            <el-option
+              v-for="course in courseYearList"
+              :key="course.course_year"
+              :label="course.course_year"
+              :value="course.course_year"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="课程类型">
+          <el-select
+            v-model="formInline.course_type"
+            placeholder="请选择课程类型"
+            style="width:100%"
+          >
+            <el-option label="全部" value="all"></el-option>
+            <el-option label="限制性选修课" value="限制性选修课"></el-option>
+            <el-option
+              label="非限制性选修课"
+              value="非限制性选修课"
+            ></el-option>
+            <el-option label="公共必修课" value="公共必修课"></el-option>
+            <el-option label="公共选修课" value="公共选修课"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="考核方式">
+          <el-select
+            v-model="formInline.course_assess"
+            placeholder="请选择考核方式"
+            style="width:100%"
+          >
+            <el-option label="全部" value="all"></el-option>
+            <el-option label="考查" value="考查"></el-option>
+            <el-option label="考试" value="考试"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="课程名称">
+          <el-input
+            v-model="formInline.course_name"
+            placeholder="请输入课程名称"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="授课教师">
+          <el-input
+            v-model="formInline.user_name"
+            placeholder="请输入授课教师"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -20,85 +77,127 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table :data="userList" stripe style="width: 100%" border>
+      <el-table
+        :data="courseList"
+        stripe
+        style="width: 100%"
+        v-loading="loading"
+      >
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="课程ID">
+                <span>{{ props.row.course_id }}</span>
+              </el-form-item>
+              <el-form-item label="课程名称">
+                <span>{{ props.row.course_name }}</span>
+              </el-form-item>
+              <el-form-item label="所属学院">
+                <span>{{ props.row.college_name }}</span>
+              </el-form-item>
+              <el-form-item label="授课教师">
+                <span>{{ props.row.user_name }}</span>
+              </el-form-item>
+              <el-form-item label="课时">
+                <span>{{ props.row.course_hour }}</span>
+              </el-form-item>
+              <el-form-item label="上课地点">
+                <span>{{ props.row.course_classroom }}</span>
+              </el-form-item>
+              <el-form-item label="学分">
+                <span>{{ props.row.course_credit }}</span>
+              </el-form-item>
+              <el-form-item label="开课学年">
+                <span>{{ props.row.course_year }}</span>
+              </el-form-item>
+              <el-form-item label="课容量">
+                <span>{{ props.row.course_amount }}</span>
+              </el-form-item>
+              <el-form-item label="课程类型">
+                <span>{{ props.row.course_type }}</span>
+              </el-form-item>
+              <el-form-item label="考核方式">
+                <span>{{ props.row.course_assess }}</span>
+              </el-form-item>
+
+              <el-form-item label="课程简介">
+                <span>{{ props.row.course_info }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column
-          label="id"
+          label="序号"
           width="50"
           type="index"
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="user_username"
-          label="用户名"
+          prop="course_id"
+          label="课程ID"
+          align="center"
+          min-width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="course_name"
+          label="课程名称"
           align="center"
           min-width="150"
         >
         </el-table-column>
         <el-table-column
-          prop="role"
-          label="权限"
+          prop="college_name"
+          label="所属学院"
+          align="center"
+          min-width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="user_name"
+          label="授课教师"
+          align="center"
+          min-width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="course_hour"
+          label="课时"
           align="center"
           min-width="80"
         ></el-table-column>
         <el-table-column
-          prop="user_name"
-          label="姓名"
+          prop="course_classroom"
+          label="上课地点"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="course_credit"
+          label="学分"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="course_year"
+          label="开课学年"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="course_amount"
+          label="课容量"
+          align="center"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="course_type"
+          label="课程类型"
           align="center"
           min-width="150"
         ></el-table-column>
         <el-table-column
-          prop="user_last_name"
-          label="曾用名"
+          prop="course_assess"
+          label="考核方式"
           align="center"
           min-width="150"
-        ></el-table-column>
-        <el-table-column
-          prop="user_sex"
-          label="性别"
-          align="center"
-          min-width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="user_age"
-          label="年龄"
-          align="center"
-          min-width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="user_nation"
-          label="民族"
-          align="center"
-          min-width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="user_tel"
-          label="手机"
-          align="center"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="user_birthday"
-          label="出生日期"
-          align="center"
-          min-width="130"
-        ></el-table-column>
-        <el-table-column
-          prop="user_address"
-          label="籍贯"
-          align="center"
-          min-width="150"
-        ></el-table-column>
-        <el-table-column
-          prop="user_heath"
-          label="健康状况"
-          align="center"
-          min-width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="user_culture"
-          label="文化程度"
-          align="center"
-          min-width="100"
         ></el-table-column>
 
         <el-table-column align="center" fixed="right" label="操作" width="120">
@@ -109,6 +208,10 @@
               icon="el-icon-edit"
               circle
               size="mini"
+              :disabled="
+                $store.state.userInfo.teacher_college_id !==
+                  scope.row.college_id
+              "
             ></el-button>
             <el-button
               type="danger"
@@ -116,15 +219,23 @@
               icon="el-icon-delete"
               circle
               size="mini"
+              :disabled="
+                $store.state.userInfo.teacher_college_id !==
+                  scope.row.college_id
+              "
             ></el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
         background
-        :hide-on-single-page="true"
-        layout="prev, pager, next"
-        :total="1000"
+        layout="total, prev, pager, next, sizes"
+        :total="page.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page.currentPage"
+        :page-sizes="[10, 15, 20]"
+        :page-size="page.pageSize"
       >
       </el-pagination>
     </div>
@@ -132,43 +243,74 @@
 </template>
 
 <script>
+import { getCollegeSelect } from "@api/college";
+import { getAllCourse, queryCourseYear, removeCourse } from "@api/course";
 export default {
+  mounted() {
+    getCollegeSelect().then(res => (this.collegeList = res));
+    queryCourseYear().then(res => {
+      this.courseYearList = res;
+    });
+    this.queryCourse();
+  },
   data() {
     return {
       formInline: {
-        user: "",
-        region: ""
+        college_id: "all",
+        course_year: "all",
+        course_type: "all",
+        course_assess: "all",
+        course_name: "",
+        user_name: ""
       },
-      userList: [
-        {
-          user_username: "user1",
-          user_password: "123",
-          role_id: 1,
-          user_name: "张三",
-          user_sex: "男",
-          user_age: 19,
-          user_address: "河北省邯郸市",
-          user_nation: "汉族",
-          user_tel: "13731002865",
-          user_birthday: Date.now(),
-          user_last_name: "李四",
-          user_heath: "健康",
-          user_culture: "本科"
-        }
-      ],
-      dialogVisible: false,
-      editUserObj: {}
+      collegeList: [],
+      courseList: [],
+      courseYearList: [],
+      page: {
+        pageSize: 10, //每页的数据条数
+        currentPage: 1, // 当前页
+        total: 1
+      },
+      loading: false
     };
   },
   methods: {
+    async queryCourse() {
+      const { currentPage, pageSize } = this.page;
+      const {
+        college_id,
+        course_year,
+        course_type,
+        course_assess,
+        course_name,
+        user_name
+      } = this.formInline;
+      this.loading = true;
+      const result = await getAllCourse(
+        currentPage,
+        pageSize,
+        college_id,
+        course_year,
+        course_type,
+        course_assess,
+        course_name,
+        user_name
+      );
+      this.courseList = result.courseList;
+      this.page = result.page;
+      this.loading = false;
+    },
     onSubmit() {
-      console.log("submit!");
+      this.page.currentPage = 1;
+      this.queryCourse();
     },
     handleClick(row, flag) {
       if (flag) {
         // 编辑
-        this.dialogVisible = true;
-        this.editUserObj = Object.assign({}, row);
+        this.$router.push({
+          name: "courseEdit",
+          params: { flag: true, data: row }
+        });
       } else {
         // 删除
         this.$confirm("确定要删除此记录吗？是否继续?", "提示", {
@@ -176,11 +318,16 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
+          .then(async () => {
+            const result = await removeCourse(row.course_id);
+            if (result) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.page.currentPage = 1;
+              this.queryCourse();
+            }
           })
           .catch(() => {
             this.$message({
@@ -190,23 +337,54 @@ export default {
           });
       }
     },
-    handleCloseBtn(flag) {
-      if (flag) {
-        this.$refs.userFormEle.onSubmit();
-        const reuslt = this.$refs.userFormEle.isSuccess;
-        if (reuslt) {
-          this.dialogVisible = false;
-        }
-      } else {
-        this.$refs.userFormEle.resetForm();
-        this.dialogVisible = false;
-      }
+    handleSizeChange(val) {
+      this.page.currentPage = 1;
+      this.page.pageSize = val;
+      this.queryCourse();
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val;
+      this.queryCourse();
     }
   },
+  computed: {},
   components: {}
 };
 </script>
 
 <style lang="scss" scoped>
-@import "./UserList.scss";
+.user-list {
+  min-height: 100%;
+  > .user-list-header,
+  .user-list-footer {
+    padding: 0 20px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    .el-form-item {
+      margin-bottom: 0px;
+    }
+  }
+  .user-list-header {
+    .el-form-item {
+      margin-top: 20px;
+    }
+  }
+  .el-pagination {
+    text-align: right;
+    margin-top: 15px;
+  }
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+}
 </style>

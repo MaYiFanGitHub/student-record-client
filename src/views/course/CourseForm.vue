@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="course-form-box">
     <el-form
       ref="courseObjForm"
       :model="courseObj"
@@ -8,7 +8,7 @@
     >
       <el-page-header
         @back="goBack"
-        content="班级编辑"
+        content="课程编辑"
         v-if="$route.params.flag"
       >
       </el-page-header>
@@ -44,6 +44,7 @@
               value-format="yyyy"
               v-model="courseObj.course_year_begin"
               type="year"
+              @change="forceUpdate1"
             >
             </el-date-picker>
           </el-col>
@@ -56,6 +57,7 @@
               value-format="yyyy"
               v-model="courseObj.course_year_end"
               type="year"
+              @change="forceUpdate2"
             >
             </el-date-picker>
           </el-col>
@@ -136,18 +138,16 @@
 </template>
 
 <script>
-import { addCourse } from "@api/course";
+import { addCourse, editCourse } from "@api/course";
 export default {
   mounted() {
     const { flag, data } = this.$route.params;
+
     if (flag) {
-      this.classObj = {
-        teacher_id: data.teacher_id,
-        specialty: data.specialty,
-        college_id: data.college_id,
-        class_name: data.class_name,
-        class_id: data.class_id
-      };
+      data.course_year_begin = data.course_year.split("-")[0];
+      data.course_year_end = data.course_year.split("-")[1];
+      this.courseObj = data;
+      this.$set(this, "courseObj", data);
     }
   },
   data() {
@@ -226,8 +226,7 @@ export default {
         if (valid) {
           let result;
           if (this.$route.params.flag) {
-            // result = await editClass(this.classObj);
-            console.log(111);
+            result = await editCourse(this.courseObj);
           } else {
             result = await addCourse(this.courseObj);
           }
@@ -250,6 +249,12 @@ export default {
     },
     goBack() {
       this.$router.back();
+    },
+    forceUpdate1(val) {
+      this.$set(this.courseObj, "course_year_begin", val);
+    },
+    forceUpdate2(val) {
+      this.$set(this.courseObj, "course_year_end", val);
     }
   },
   watch: {
@@ -261,6 +266,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.course-form-box {
+  background-color: #fff;
+}
 .el-form {
   padding-top: 30px;
   background-color: #fff;
@@ -270,5 +278,8 @@ export default {
       width: 100% !important;
     }
   }
+}
+.el-page-header {
+  padding: 0px 30px 50px;
 }
 </style>
