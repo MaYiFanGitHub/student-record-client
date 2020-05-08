@@ -98,6 +98,10 @@ const menuList = [
         title: "成绩查询"
       },
       {
+        id: "/score/studentList",
+        title: "个人成绩"
+      },
+      {
         id: "/score/examine",
         title: "成绩复议审批"
       }

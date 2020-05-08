@@ -200,7 +200,13 @@
           min-width="150"
         ></el-table-column>
 
-        <el-table-column align="center" fixed="right" label="操作" width="120">
+        <el-table-column
+          align="center"
+          fixed="right"
+          label="操作"
+          width="120"
+          v-if="$store.state.userInfo.role_id != 3"
+        >
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -209,8 +215,7 @@
               circle
               size="mini"
               :disabled="
-                $store.state.userInfo.teacher_college_id !==
-                  scope.row.college_id
+                $store.state.userInfo.college_id !== scope.row.college_id
               "
             ></el-button>
             <el-button
@@ -220,8 +225,7 @@
               circle
               size="mini"
               :disabled="
-                $store.state.userInfo.teacher_college_id !==
-                  scope.row.college_id
+                $store.state.userInfo.college_id !== scope.row.college_id
               "
             ></el-button>
           </template>

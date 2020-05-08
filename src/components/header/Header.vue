@@ -7,7 +7,7 @@
     <div class="user fr">
       <img src="@a/logo.png" alt="" srcset="" />
       <p>
-        你好，<span>{{
+        {{ $store.state.userInfo.role_name }}你好，<span>{{
           $store.state.userInfo.user_name || $store.state.userInfo.user_username
         }}</span
         ><el-button type="text" @click="open">退出</el-button>

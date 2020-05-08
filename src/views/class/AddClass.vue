@@ -19,7 +19,7 @@
               v-model="classObj.college_id"
               placeholder="请选择"
               style="width:100%"
-              @change="collegeChange"
+              disabled
             >
               <el-option
                 v-for="college in collegeList"
@@ -93,7 +93,13 @@ export default {
   props: [],
   mounted() {
     findTeacher().then(res => (this.userList = res));
-    queryMajor().then(res => (this.collegeList = res));
+    queryMajor().then(res => {
+      this.collegeList = res;
+      this.classObj.college_id = this.$store.state.userInfo.college_id;
+      this.majorList = this.collegeList.find(
+        college => college.college_id === this.classObj.college_id
+      )["majorList"];
+    });
     const { flag, data } = this.$route.params;
     if (flag) {
       this.classObj = {
@@ -156,7 +162,7 @@ export default {
             this.classObj = {
               teacher_id: "",
               specialty: "",
-              college_id: "",
+              college_id: this.$store.state.userInfo.college_id,
               class_name: ""
             };
             this.$message({
@@ -172,13 +178,7 @@ export default {
     },
     resetForm() {
       this.$refs["classObj"].resetFields();
-    },
-    collegeChange(params) {
-      console.log(params);
-      this.majorList = this.collegeList.find(
-        college => college.college_id === params
-      )["majorList"];
-      this.classObj.specialty = "";
+      this.classObj.college_id = this.$store.state.userInfo.college_id;
     },
     goBack() {
       this.$router.back();

@@ -253,7 +253,6 @@ export default {
             const sheetArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
             const res = sheetArray.map(item => {
               let key = item["授课教师"];
-              console.log(this.tutorList[key]);
               return {
                 course_name: item["课程名称"],
                 course_hour: item["课时"],
@@ -268,7 +267,7 @@ export default {
                 course_info: item["课程简介"]
               };
             });
-            this.courseList.push(...res);
+            this.courseList = res;
           }
         } catch (e) {
           this.$message.warning("文件类型不正确！");

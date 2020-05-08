@@ -36,6 +36,7 @@
         label="批量导入学生"
         name="six"
         v-if="$store.state.userInfo.role_id === 4"
+        lazy
       >
         <AddStudent></AddStudent>
       </el-tab-pane>

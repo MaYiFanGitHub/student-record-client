@@ -80,8 +80,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-
 import { addCollege, editCollege } from "@api/college.js";
 export default {
   props: [],
@@ -161,7 +159,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(["userCollegeList"])
+    userCollegeList() {
+      let res = this.$store.state.userCollegeList;
+      const { flag, data } = this.$route.params;
+      if (flag) {
+        res.unshift({ user_id: data.user_id, user_name: data.user_name });
+      }
+      return res;
+    }
   }
 };
 </script>

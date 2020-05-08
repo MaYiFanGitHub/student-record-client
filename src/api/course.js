@@ -32,8 +32,8 @@ export const getAllCourse = (
   });
 // // 修改课程
 export const editCourse = courseObj => ajax.post("/course/edit", courseObj);
-// 删除班级
+// 删除课程
 export const removeCourse = course_id =>
   ajax.get("/course/remove", { params: { course_id } });
-// // 获取所有班级
-// export const queryCourseAll = () => ajax.get("/course/queryList");
+// 获取所有本学院的所有课程
+export const queryCourseByCollege = () => ajax.get("/course/queryList");

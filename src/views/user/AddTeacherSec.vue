@@ -272,7 +272,8 @@ export default {
                 teacher_title: item["职称"]
               };
             });
-            this.userList.push(...res);
+            // this.userList.push(...res);
+            this.userList = res;
           }
           this.loading = false;
         } catch (e) {

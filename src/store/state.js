@@ -4,5 +4,7 @@ export default {
   userInfo: {},
   politicsList: [],
   classList: [],
-  userTeacherList: []
+  userTeacherList: [],
+  courseListByCollege: [],
+  studentListByCollege: []
 };

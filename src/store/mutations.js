@@ -4,7 +4,9 @@ import {
   LOGIN,
   QUERY_POLITICS,
   QUERY_CLASS,
-  RECEIVE_TEACHER_USER
+  RECEIVE_TEACHER_USER,
+  RECEIVE_COLLEGE_COURSE,
+  RECEIVE_COLLEGE_STUDENT
 } from "./mutations_type";
 
 export default {
@@ -31,5 +33,13 @@ export default {
   // 获取政治面貌字典表
   [QUERY_CLASS](state, classList) {
     state.classList = classList;
+  },
+  // 获获取本学院所有课程
+  [RECEIVE_COLLEGE_COURSE](state, courseListByCollege) {
+    state.courseListByCollege = courseListByCollege;
+  },
+  // 获取本学院所有学生
+  [RECEIVE_COLLEGE_STUDENT](state, studentListByCollege) {
+    state.studentListByCollege = studentListByCollege;
   }
 };

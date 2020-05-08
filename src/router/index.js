@@ -28,6 +28,8 @@ import AddMajor from "@v/major/AddMajor.vue";
 import classRouter from "./class";
 // 课程模块
 import courseRouter from "./course.js";
+// 成绩模块
+import scoreRouter from "./score";
 
 // 解决同一路由下跳转报错
 const routerPush = VueRouter.prototype.push;
@@ -167,6 +169,7 @@ const routes = [
       },
       classRouter,
       courseRouter,
+      scoreRouter,
       {
         name: "404",
         path: "/404",

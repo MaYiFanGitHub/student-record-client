@@ -173,6 +173,7 @@
             placeholder="请选择所属学院"
             style="width:100%"
             @change="collegeChange"
+            disabled
           >
             <el-option
               v-for="college in collegeList"
@@ -232,24 +233,15 @@ import { queryMajor } from "@api/college";
 import { mapState } from "vuex";
 export default {
   props: ["dialogVisible", "editUserObj"],
-  created() {
-    this.userObj = this.editUserObj || {};
-  },
   async mounted() {
     this.$store.dispatch("getAllRoll");
     let res = await queryMajor();
     this.collegeList = res;
     const { flag, data } = this.$route.params;
+
     if (flag) {
-      data.college_id = data.student_college_id;
       this.userObj = data;
-      // 获取专业列表
-      this.majorList = Object.assign(
-        {},
-        this.collegeList.find(
-          college => college.college_id === this.userObj.student_college_id
-        )["majorList"]
-      );
+
       // 获取班级列表
       this.classList = Object.assign(
         {},
@@ -258,6 +250,14 @@ export default {
         )
       );
     }
+
+    // 获取专业列表
+    this.majorList = Object.assign(
+      {},
+      this.collegeList.find(
+        college => college.college_id === this.userObj.college_id
+      )["majorList"]
+    );
   },
   data() {
     return {
@@ -278,7 +278,7 @@ export default {
         teacher_title: "",
         politics_status_id: "",
         specialty: "",
-        college_id: "",
+        college_id: this.$store.state.userInfo.college_id,
         class_id: ""
       },
       collegeList: [],

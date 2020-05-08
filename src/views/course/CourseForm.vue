@@ -44,7 +44,6 @@
               value-format="yyyy"
               v-model="courseObj.course_year_begin"
               type="year"
-              @change="forceUpdate1"
             >
             </el-date-picker>
           </el-col>
@@ -57,7 +56,6 @@
               value-format="yyyy"
               v-model="courseObj.course_year_end"
               type="year"
-              @change="forceUpdate2"
             >
             </el-date-picker>
           </el-col>
@@ -147,7 +145,6 @@ export default {
       data.course_year_begin = data.course_year.split("-")[0];
       data.course_year_end = data.course_year.split("-")[1];
       this.courseObj = data;
-      this.$set(this, "courseObj", data);
     }
   },
   data() {
@@ -227,6 +224,7 @@ export default {
           let result;
           if (this.$route.params.flag) {
             result = await editCourse(this.courseObj);
+            console.log(111);
           } else {
             result = await addCourse(this.courseObj);
           }
@@ -249,12 +247,6 @@ export default {
     },
     goBack() {
       this.$router.back();
-    },
-    forceUpdate1(val) {
-      this.$set(this.courseObj, "course_year_begin", val);
-    },
-    forceUpdate2(val) {
-      this.$set(this.courseObj, "course_year_end", val);
     }
   },
   watch: {

@@ -117,6 +117,9 @@
               icon="el-icon-edit"
               circle
               size="mini"
+              :disabled="
+                scope.row.college_id !== $store.state.userInfo.college_id
+              "
             ></el-button>
             <el-button
               type="danger"
@@ -124,6 +127,9 @@
               icon="el-icon-delete"
               circle
               size="mini"
+              :disabled="
+                scope.row.college_id !== $store.state.userInfo.college_id
+              "
             ></el-button>
           </template>
         </el-table-column>

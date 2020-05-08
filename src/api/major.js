@@ -17,3 +17,5 @@ export const editMajor = major => ajax.post("/major/edit", major);
 // 删除学院
 export const removeMajor = specialty =>
   ajax.get("/major/remove", { params: { specialty } });
+// 查询本学院的专业和班级
+export const queryMajorAndClass = () => ajax.get("/major/queryMajorAndClass");

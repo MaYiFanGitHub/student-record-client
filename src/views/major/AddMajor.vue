@@ -19,6 +19,7 @@
               v-model="majorObj.college_id"
               placeholder="请选择"
               style="width:100%"
+              disabled
             >
               <el-option
                 :label="college.college_name"
@@ -70,7 +71,7 @@ export default {
     // 查询所有学院
     const result = await getCollegeSelect();
     this.collegeList = result;
-
+    this.majorObj.college_id = this.$store.state.userInfo.college_id;
     const { flag, data } = this.$route.params;
     if (flag) {
       this.majorObj = data;
@@ -112,7 +113,9 @@ export default {
           }
 
           if (result) {
-            this.majorObj = {};
+            this.majorObj = {
+              college_id: this.$store.state.userInfo.college_id
+            };
             this.$message({
               type: "success",
               message: this.$route.params.flag ? "编辑成功!" : "添加成功!"
@@ -126,6 +129,7 @@ export default {
     },
     resetForm() {
       this.$refs["majorObj"].resetFields();
+      this.majorObj.college_id = this.$store.state.userInfo.college_id;
     },
     goBack() {
       this.$router.back();

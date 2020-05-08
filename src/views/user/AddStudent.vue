@@ -163,7 +163,7 @@
               v-model="scope.row.college_id"
               placeholder="请选择所属学院"
               style="width:100%"
-              @change="collegeChange(scope)"
+              disabled
             >
               <el-option
                 v-for="college in collegeList"
@@ -245,30 +245,47 @@ import { queryMajor } from "@api/college";
 export default {
   mounted() {
     this.$store.dispatch("getAllRoll");
-    queryMajor().then(res => (this.collegeList = res));
+    // 政治面貌字典对象
+    this.$store.state.politicsList.forEach(item => {
+      let key = item.politics_status_id;
+      let val = item.politics_status;
+      this.rollDistList[val] = key;
+    });
+
+    queryMajor().then(res => {
+      this.collegeList = res;
+      console.log(this.collegeList);
+      this.majorList = this.collegeList.find(
+        college => college.college_id === this.$store.state.userInfo.college_id
+      )["majorList"];
+    });
+
+    // 班级列表
+    this.classList = this.$store.state.classList;
+    // 班级字典对象
+    this.classList.forEach(item => {
+      let key = item.class_id;
+      let val = item.class_name;
+      this.classDistList[val] = key;
+    });
   },
   data() {
     return {
-      userList: [{ role_id: 3 }],
+      userList: [
+        { role_id: 3, college_id: this.$store.state.userInfo.college_id }
+      ],
       multipleSelection: [],
       activeName: "second",
       file: [],
       loading: false,
       collegeList: [],
       majorList: [],
-      classList: []
+      classList: [],
+      rollDistList: {},
+      classDistList: {}
     };
   },
   methods: {
-    collegeChange(params) {
-      this.majorList = Object.assign(
-        {},
-        this.collegeList.find(
-          college => college.college_id === params.row.college_id
-        )["majorList"]
-      );
-      this.$set(this.userList[params.$index], "specialty", "");
-    },
     marjorChange(params) {
       this.classList = Object.assign(
         {},
@@ -291,7 +308,10 @@ export default {
         }
       } else {
         // 添加
-        this.userList.push({ role_id: 3 });
+        this.userList.push({
+          role_id: 3,
+          college_id: this.$store.state.userInfo.college_id
+        });
       }
     },
     // 批量删除
@@ -302,7 +322,10 @@ export default {
       this.userList = res;
 
       if (this.userList.length === 0) {
-        this.userList.push({ role_id: 3 });
+        this.userList.push({
+          role_id: 3,
+          college_id: this.$store.state.userInfo.college_id
+        });
       }
     },
     async addMoreUser() {
@@ -312,7 +335,9 @@ export default {
           type: "success",
           message: "添加成功!"
         });
-        this.userList = [{ role_id: 3 }];
+        this.userList = [
+          { role_id: 3, college_id: this.$store.state.userInfo.college_id }
+        ];
       }
     },
     // 读取文件
@@ -330,6 +355,16 @@ export default {
             //循环读取每个文件
             const sheetArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
             const res = sheetArray.map(item => {
+              let roll = item["政治面貌"];
+              let major = item["所属专业"];
+              let className = item["所属班级"];
+              let majorDistList = {};
+              // 创建专业字典对象
+              this.majorList.forEach(item => {
+                let key = item.specialty;
+                let val = item.specialty_name;
+                majorDistList[val] = key;
+              });
               return {
                 user_username: item["用户名"],
                 user_password: item["密码"],
@@ -343,10 +378,14 @@ export default {
                 user_birthday: this.$.formatDate(item["出生日期"]),
                 user_last_name: item["曾用名"],
                 user_heath: item["健康状况"],
-                user_culture: item["文化程度"]
+                user_culture: item["文化程度"],
+                college_id: this.$store.state.userInfo.college_id,
+                politics_status_id: this.rollDistList[roll],
+                specialty: majorDistList[major],
+                class_id: this.classDistList[className]
               };
             });
-            this.userList.push(...res);
+            this.userList = res;
           }
           this.loading = false;
         } catch (e) {
@@ -357,7 +396,9 @@ export default {
     },
     // 重置
     resetClick() {
-      this.userList = [{ role_id: 3 }];
+      this.userList = [
+        { role_id: 3, college_id: this.$store.state.userInfo.college_id }
+      ];
       this.multipleSelection = [];
     }
   },

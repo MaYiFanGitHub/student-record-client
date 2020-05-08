@@ -257,7 +257,8 @@ export default {
                 user_culture: item["文化程度"]
               };
             });
-            this.userList.push(...res);
+            // this.userList.push(...res);
+            this.userList = res;
           }
           this.loading = false;
         } catch (e) {
