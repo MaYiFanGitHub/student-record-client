@@ -147,17 +147,81 @@
               v-if="$store.state.userInfo.role_id === 4"
             ></el-button>
             <el-button
-              type="primary"
+              :type="
+                scope.row.type_end_time
+                  ? 'success'
+                  : scope.row.type_begin_time
+                  ? 'warning'
+                  : 'primary'
+              "
               @click="handleClick(scope.row, 3)"
               size="mini"
               v-if="$store.state.userInfo.role_id === 3"
             >
-              申请
+              {{
+                scope.row.type_end_time
+                  ? "已审批"
+                  : scope.row.type_begin_time
+                  ? "申请中"
+                  : "申请"
+              }}
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog title="申请" :visible.sync="dialogVisible" width="600px">
+      <el-form
+        ref="classObj"
+        :model="classObj"
+        label-width="130px"
+        :rules="rules"
+      >
+        <el-form-item label="课程名称" prop="course_name">
+          <el-input v-model="applyObj.course_name" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="成绩异议类型" prop="score_dissent_type">
+          <el-select
+            v-model="applyObj.score_dissent_type"
+            placeholder="请选择类型"
+            style="width:100%"
+          >
+            <el-option label="成绩错误" :value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-col :span="12">
+          <el-form-item label="创建时间">
+            {{ applyObj.type_begin_time }}
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="关闭时间">
+            {{ applyObj.type_end_time }}
+          </el-form-item>
+        </el-col>
+
+        <el-form-item label="老师的描述">
+          <el-input
+            type="textarea"
+            v-model="applyObj.type_tea_desc"
+            :disabled="$store.state.userInfo.role_id === 3"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="学生的描述">
+          <el-input
+            type="textarea"
+            v-model="applyObj.type_stu_desc"
+            :disabled="$store.state.userInfo.role_id === 4"
+          ></el-input>
+        </el-form-item>
+        <!-- </el-col> -->
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleApply">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -165,9 +229,11 @@
 import {
   queryStudentPersonScore,
   queryStudentInfo,
-  deleteStudentScore
+  deleteStudentScore,
+  updateApplyScore
 } from "@api/student";
 import { queryCourseYear } from "@api/course";
+import Monent from "moment";
 export default {
   async mounted() {
     // 获取用户个人信息
@@ -188,10 +254,48 @@ export default {
         course_year: "all",
         course_type: "all"
       },
+      classObj: {
+        teacher_id: "",
+        specialty: "",
+        college_id: "",
+        class_name: ""
+      },
+      applyObj: {
+        course_id: "",
+        student_id: "",
+        course_name: "",
+        type_begin_time: "",
+        type_end_time: "",
+        type_tea_desc: "",
+        type_stu_desc: ""
+      },
+      rules: {
+        teacher_id: {
+          required: true,
+          message: "请选择班主任",
+          trigger: "blur"
+        },
+        specialty: {
+          required: true,
+          message: "请选择专业",
+          trigger: "blur"
+        },
+        college_id: {
+          required: true,
+          message: "请选择学院",
+          trigger: "blur"
+        },
+        class_name: {
+          required: true,
+          message: "请填写班级名称",
+          trigger: "blur"
+        }
+      },
       studentInfo: {},
       courseYearList: [],
       scoreList: [],
-      loading: false
+      loading: false,
+      dialogVisible: false
     };
   },
   methods: {
@@ -211,6 +315,39 @@ export default {
       );
       this.scoreList = result;
       this.loading = false;
+    },
+    async handleApply() {
+      delete this.applyObj.course_name;
+      if (!this.applyObj.type_begin_time) {
+        this.applyObj.type_begin_time = Monent(new Date()).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        let res = await updateApplyScore(this.applyObj);
+        if (res) {
+          this.$message({
+            type: "success",
+            message: "申请成功!"
+          });
+          this.queryStudentScore();
+        }
+      } else if (this.applyObj.type_end_time) {
+        this.applyObj.type_begin_time = Monent(new Date()).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        // 置空
+        this.applyObj.type_end_time = "";
+        this.applyObj.type_tea_desc = "";
+
+        let res = await updateApplyScore(this.applyObj);
+        if (res) {
+          this.$message({
+            type: "success",
+            message: "申请成功!"
+          });
+          this.queryStudentScore();
+        }
+      }
+      this.dialogVisible = false;
     },
     handleClick(row, flag) {
       if (flag == 1) {
@@ -246,7 +383,23 @@ export default {
             });
           });
       } else if (flag === 3) {
-        console.log(1);
+        this.dialogVisible = true;
+
+        this.applyObj = {
+          course_id: row.course_id,
+          student_id: row.student_id,
+          course_name: row.course_name,
+          type_begin_time: row.type_begin_time
+            ? Monent(row.type_begin_time).format("YYYY-MM-DD HH:mm:ss")
+            : "",
+          type_end_time: row.type_end_time
+            ? Monent(row.type_end_time).format("YYYY-MM-DD HH:mm:ss")
+            : "",
+          type_tea_desc: row.type_tea_desc,
+          type_stu_desc: row.type_stu_desc,
+          score_dissent_type: row.score_dissent_type,
+          score: row.score
+        };
       }
     },
     yearChange(params) {

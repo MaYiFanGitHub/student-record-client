@@ -8,6 +8,9 @@ export const addStudentScore = scoreList =>
 // 更新成绩
 export const updateStudentScore = score =>
   ajax.post("/student/updateScore", score);
+// 成绩异议更新
+export const updateApplyScore = score =>
+  ajax.post("/student/applyScore", score);
 // 删除成绩
 export const deleteStudentScore = (student_id, course_id) =>
   ajax.get("/student/deleteScore", { params: { student_id, course_id } });
@@ -20,6 +23,17 @@ export const getAllStudent = (
 ) =>
   ajax.get("/student/all", {
     params: { currentPage, pageSize, class_id, specialty }
+  });
+// 成绩异议列表
+export const getApplyScoreList = (
+  currentPage = 1,
+  pageSize = 10,
+  class_id = "",
+  specialty = "",
+  apply_type = -1
+) =>
+  ajax.get("/student/queryApplyList", {
+    params: { currentPage, pageSize, class_id, specialty, apply_type }
   });
 // 获取学生个人成绩
 export const queryStudentPersonScore = (

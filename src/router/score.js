@@ -3,6 +3,7 @@ import ScoreList from "@v/score/ScoreList.vue";
 import AddScore from "@v/score/AddScore.vue";
 import ScoreForm from "@v/score/ScoreForm.vue";
 import ScoreStudentList from "@v/score/ScoreStudentList.vue";
+import ExamineList from "@v/score/ExamineList.vue";
 
 export default {
   path: "/score",
@@ -44,6 +45,14 @@ export default {
         name: "个人成绩"
       },
       component: ScoreStudentList
+    },
+    {
+      path: "/score/examine",
+      name: "scoreExamine",
+      meta: {
+        name: "成绩复议审批"
+      },
+      component: ExamineList
     }
   ]
 };
