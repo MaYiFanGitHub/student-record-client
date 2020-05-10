@@ -108,16 +108,16 @@ const menuList = [
     ]
   },
   {
-    id: "/test1112",
+    id: "/person",
     title: "个人资料管理",
     icon: "el-icon-notebook-2",
     children: [
       {
-        id: "/title211",
+        id: "/person/add",
         title: "个人资料录入"
       },
       {
-        id: "/title221",
+        id: "/person/password",
         title: "密码修改"
       }
     ]

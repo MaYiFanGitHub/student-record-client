@@ -30,6 +30,8 @@ import classRouter from "./class";
 import courseRouter from "./course.js";
 // 成绩模块
 import scoreRouter from "./score";
+// 个人资料模块
+import PersonRouter from "./person";
 
 // 解决同一路由下跳转报错
 const routerPush = VueRouter.prototype.push;
@@ -170,6 +172,7 @@ const routes = [
       classRouter,
       courseRouter,
       scoreRouter,
+      PersonRouter,
       {
         name: "404",
         path: "/404",

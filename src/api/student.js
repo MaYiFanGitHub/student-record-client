@@ -8,6 +8,19 @@ export const addStudentScore = scoreList =>
 // 更新成绩
 export const updateStudentScore = score =>
   ajax.post("/student/updateScore", score);
+// 添加教育背景
+export const addEduList = (eduList, student_id) =>
+  ajax.post("/student/addEdu", { eduList, student_id });
+// 添加家庭成员
+export const addFamilyList = (familyList, student_id) =>
+  ajax.post("/student/addFamily", { familyList, student_id });
+// 添加政治面貌信息
+export const addPolitics = (politicsObj, politics_status_info_id, student_id) =>
+  ajax.post("/student/addPolitics", {
+    politicsObj,
+    politics_status_info_id,
+    student_id
+  });
 // 成绩异议更新
 export const updateApplyScore = score =>
   ajax.post("/student/applyScore", score);
@@ -48,6 +61,11 @@ export const queryStudentPersonScore = (
 export const queryStudentInfo = student_id =>
   ajax.get("/student/queryStudentInfo", {
     params: { student_id }
+  });
+// 获取个人信息
+export const queryPersonInfo = user_id =>
+  ajax.get("/student/queryPersonInfo", {
+    params: { user_id }
   });
 // // 修改班级
 // export const editClass = classObj => ajax.post("/class/edit", classObj);

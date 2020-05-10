@@ -35,3 +35,6 @@ export const login = (user_username, user_password, role_id) =>
   ajax.post("/user/login", { user_username, user_password, role_id });
 // 退出
 export const logout = () => ajax.get("/user/logout");
+// 更新密码
+export const updatePassword = (user_password, user_id) =>
+  ajax.post("/user/updatePassword", { user_password, user_id });

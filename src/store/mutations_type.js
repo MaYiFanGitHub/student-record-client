@@ -7,3 +7,4 @@ export const QUERY_CLASS = "query_class";
 export const RECEIVE_TEACHER_USER = "receive_teacher_user";
 export const RECEIVE_COLLEGE_STUDENT = "receive_college_student";
 export const RECEIVE_COLLEGE_COURSE = "receive_college_course";
+export const LOGOUT = "LOGOUT";
