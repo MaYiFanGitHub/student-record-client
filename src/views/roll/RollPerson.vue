@@ -98,7 +98,7 @@
               circle
               size="mini"
               v-if="$store.state.userInfo.role_id === 4"
-              :disabled="!scope.row.roll_end_time"
+              :disabled="!!scope.row.roll_end_time"
             ></el-button>
             <el-button
               type="danger"

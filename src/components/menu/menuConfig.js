@@ -143,31 +143,35 @@ const menuList = [
     ]
   },
   {
-    id: "title-81",
+    id: "/honor",
     title: "奖惩信息管理",
     icon: "el-icon-set-up",
     children: [
       {
-        id: "title621",
+        id: "/honor/add",
         title: "奖惩活动添加"
       },
       {
-        id: "titl1234e122",
+        id: "/honor/list",
         title: "奖惩活动列表"
+      },
+      {
+        id: "/honor/query",
+        title: "奖惩信息查询"
       }
     ]
   },
   {
-    id: "title-9",
+    id: "/job",
     title: "就业信息管理",
     icon: "el-icon-date",
     children: [
       {
-        id: "title6201",
+        id: "/job/add",
         title: "就业信息登记"
       },
       {
-        id: "titl12340e122",
+        id: "/job/list",
         title: "就业信息列表"
       }
     ]
