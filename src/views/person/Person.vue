@@ -697,7 +697,7 @@ export default {
       let res = await queryPersonInfo(
         userObj.user_id || this.$store.state.userInfo.user_id
       );
-      console.log(res)
+      console.log(res);
       this.eduList = res.eduList.map(item => {
         item.edu_begin_time = Monent(item.edu_begin_time).format("YYYY-MM-DD");
         item.edu_end_time = Monent(item.edu_end_time).format("YYYY-MM-DD");
