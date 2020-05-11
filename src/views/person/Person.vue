@@ -645,9 +645,14 @@ export default {
 
     // 获取当前是哪种身份进入
     let userObj = this.$route.params.data || {};
+    console.log(userObj);
     if (userObj.user_id) {
       // 学生基本信息跳转
       this.inRoleId = userObj.role_id;
+      this.student_id = userObj.student_id;
+      console.log(this.student_id);
+      this.user_id = userObj.user_id;
+      this.politics_status_info_id = userObj.politics_status_info_id;
     } else {
       // 个人点击进入
       this.inRoleId = this.$store.state.userInfo.role_id;
@@ -692,6 +697,7 @@ export default {
       let res = await queryPersonInfo(
         userObj.user_id || this.$store.state.userInfo.user_id
       );
+      console.log(res)
       this.eduList = res.eduList.map(item => {
         item.edu_begin_time = Monent(item.edu_begin_time).format("YYYY-MM-DD");
         item.edu_end_time = Monent(item.edu_end_time).format("YYYY-MM-DD");

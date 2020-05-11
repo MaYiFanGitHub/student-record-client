@@ -12,6 +12,7 @@ export default {
   redirect: "/person/add",
   children: [
     {
+      name: "personAdd",
       path: "/person/add",
       meta: {
         name: "个人资料录入"

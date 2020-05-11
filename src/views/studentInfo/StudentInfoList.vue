@@ -39,7 +39,12 @@
       </el-form>
     </div>
     <div class="user-list-footer">
-      <el-table :data="rollList" stripe style="width: 100%" v-loading="loading">
+      <el-table
+        :data="studentList"
+        stripe
+        style="width: 100%"
+        v-loading="loading"
+      >
         <el-table-column
           label="序号"
           width="50"
@@ -101,7 +106,7 @@
 </template>
 
 <script>
-import { getAllRoll } from "@api/roll";
+import { queryStudentInfoList } from "@api/student";
 import { queryMajorAndClass } from "@api/major";
 export default {
   mounted() {
@@ -116,7 +121,7 @@ export default {
       },
       majorList: [],
       classList: [],
-      rollList: [],
+      studentList: [],
       page: {
         pageSize: 10, //每页的数据条数
         currentPage: 1, // 当前页
@@ -130,13 +135,13 @@ export default {
       const { currentPage, pageSize } = this.page;
       const { class_id, specialty } = this.formInline;
       this.loading = true;
-      const result = await getAllRoll(
+      const result = await queryStudentInfoList(
         currentPage,
         pageSize,
         class_id,
         specialty
       );
-      this.rollList = result.rollList;
+      this.studentList = result.studentList;
       this.page = result.page;
       this.loading = false;
     },
@@ -145,9 +150,17 @@ export default {
       this.queryRoll();
     },
     handleClick(row) {
+      console.log(row);
       this.$router.push({
-        path: "/roll/person",
-        query: { student_id: row.student_id }
+        name: "personAdd",
+        params: {
+          data: {
+            user_id: row.user_id,
+            student_id: row.student_id,
+            role_id: row.role_id,
+            politics_status_info_id: row.politics_status_info_id
+          }
+        }
       });
     },
     handleSizeChange(val) {

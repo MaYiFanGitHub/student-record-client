@@ -37,6 +37,16 @@ export const getAllStudent = (
   ajax.get("/student/all", {
     params: { currentPage, pageSize, class_id, specialty }
   });
+// 学生基本信息查询
+export const queryStudentInfoList = (
+  currentPage = 1,
+  pageSize = 10,
+  class_id = "",
+  specialty = ""
+) =>
+  ajax.get("/student/queryStudentInfoList", {
+    params: { currentPage, pageSize, class_id, specialty }
+  });
 // 成绩异议列表
 export const getApplyScoreList = (
   currentPage = 1,
