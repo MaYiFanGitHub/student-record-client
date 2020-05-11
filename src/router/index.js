@@ -32,6 +32,10 @@ import courseRouter from "./course.js";
 import scoreRouter from "./score";
 // 个人资料模块
 import PersonRouter from "./person";
+// 学籍模块
+import RollRouter from "./roll";
+// 学生基本信息管理模块
+import StudentRouter from "./studentInfo";
 
 // 解决同一路由下跳转报错
 const routerPush = VueRouter.prototype.push;
@@ -173,6 +177,8 @@ const routes = [
       courseRouter,
       scoreRouter,
       PersonRouter,
+      RollRouter,
+      StudentRouter,
       {
         name: "404",
         path: "/404",

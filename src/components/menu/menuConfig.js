@@ -124,21 +124,21 @@ const menuList = [
   },
 
   {
-    id: "title-6",
+    id: "/roll",
     title: "学籍管理",
     icon: "el-icon-suitcase-1",
     children: [
       {
-        id: "title21",
+        id: "/roll/list",
         title: "学籍异动审批"
       },
       {
-        id: "titl123e122",
+        id: "/roll/add",
         title: "学籍异动申请"
       },
       {
-        id: "title422",
-        title: "学籍查询"
+        id: "/roll/person",
+        title: "个人学籍异动查询"
       }
     ]
   },
@@ -173,19 +173,9 @@ const menuList = [
     ]
   },
   {
-    id: "title-8",
+    id: "/studentInfo/list",
     title: "学生基本信息管理",
-    icon: "el-icon-folder-opened",
-    children: [
-      {
-        id: "title6218",
-        title: "学生基本信息添加"
-      },
-      {
-        id: "titl1234e1227",
-        title: "学生基本信息列表"
-      }
-    ]
+    icon: "el-icon-folder-opened"
   }
 ];
 
