@@ -1,7 +1,7 @@
 <template>
   <div class="welcome">
     <div>
-      <p>你好, {{ test }}</p>
+      <p>你好, {{ $store.state.userInfo.user_name }}</p>
       <p>欢迎进入高校学生档案管理系统</p>
     </div>
   </div>
