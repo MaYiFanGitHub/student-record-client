@@ -38,6 +38,8 @@ import RollRouter from "./roll";
 import StudentRouter from "./studentInfo";
 // 奖惩信息模块
 import HonorRouter from "./honor";
+// 就业信息模块
+import JobRouter from "./job";
 
 // 解决同一路由下跳转报错
 const routerPush = VueRouter.prototype.push;
@@ -182,6 +184,7 @@ const routes = [
       RollRouter,
       StudentRouter,
       HonorRouter,
+      JobRouter,
       {
         name: "404",
         path: "/404",

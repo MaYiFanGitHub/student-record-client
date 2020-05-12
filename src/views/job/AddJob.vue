@@ -1,14 +1,9 @@
 <template>
   <div class="add-major">
-    <el-form
-      ref="honorObj"
-      :model="honorObj"
-      label-width="120px"
-      :rules="rules"
-    >
+    <el-form ref="jobObj" :model="jobObj" label-width="120px" :rules="rules">
       <el-page-header
         @back="goBack"
-        content="奖惩信息编辑"
+        content="就业信息编辑"
         v-if="$route.params.flag"
       >
       </el-page-header>
@@ -16,7 +11,7 @@
         <el-col :span="8" :offset="2">
           <el-form-item label="所属学院" prop="college_id">
             <el-select
-              v-model="honorObj.college_id"
+              v-model="jobObj.college_id"
               placeholder="请选择"
               style="width:100%"
               disabled
@@ -33,7 +28,7 @@
         <el-col :span="8" :offset="2">
           <el-form-item label="学生姓名" prop="student_id">
             <el-select
-              v-model="honorObj.student_id"
+              v-model="jobObj.student_id"
               placeholder="请选择学生"
               style="width:100%"
               :disabled="this.$route.params.flag"
@@ -49,46 +44,33 @@
         </el-col>
 
         <el-col :span="8" :offset="2">
-          <el-form-item label="奖惩类型" prop="honor_type">
-            <el-select
-              v-model="honorObj.honor_type"
-              placeholder="请选择"
-              style="width:100%"
-            >
-              <el-option label="荣誉" :value="0"></el-option>
-              <el-option label="处分" :value="1"></el-option>
-            </el-select>
+          <el-form-item label="单位名称" prop="job_name">
+            <el-input type="text" v-model="jobObj.job_name"> </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" :offset="2">
-          <el-form-item label="奖惩级别" prop="honor_rank">
-            <el-select
-              v-model="honorObj.honor_rank"
-              placeholder="请选择"
-              style="width:100%"
-            >
-              <el-option label="国家级" value="国家级"></el-option>
-              <el-option label="省级" value="省级"></el-option>
-              <el-option label="市级" value="市级"></el-option>
-              <el-option label="校级" value="校级"></el-option>
-              <el-option label="院级" value="院级"></el-option>
-            </el-select>
+          <el-form-item label="社会信用代码" prop="job_code">
+            <el-input type="text" v-model="jobObj.job_code"> </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" :offset="2">
-          <el-form-item label="奖惩名称" prop="honor_name">
-            <el-input type="text" v-model="honorObj.honor_name"> </el-input>
+          <el-form-item label="单位地址" prop="job_address">
+            <el-input type="text" v-model="jobObj.job_address"> </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" :offset="2">
-          <el-form-item label="时间" prop="honor_time">
-            <el-date-picker
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              v-model="honorObj.honor_time"
-              style="width:100%"
-            >
-            </el-date-picker>
+          <el-form-item label="单位联系人" prop="job_person">
+            <el-input type="text" v-model="jobObj.job_person"> </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" :offset="2">
+          <el-form-item label="联系人电话" prop="job_tel">
+            <el-input type="text" v-model="jobObj.job_tel"> </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" :offset="2">
+          <el-form-item label="工作内容" prop="job_content">
+            <el-input type="text" v-model="jobObj.job_content"> </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" :offset="2">
@@ -101,7 +83,7 @@
               :before-remove="beforeRemove"
               :on-success="onSunccess"
               multiple
-              :file-list="honorObj.fileList"
+              :file-list="jobObj.fileList"
             >
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -123,16 +105,15 @@
 
 <script>
 import { queryMajor } from "@api/college";
-import { addHonor, updateHonor } from "@api/honor";
+import { addJob, updateJob } from "@api/job";
 import Moment from "moment";
-// import { addClass, editClass } from "@api/class";
 export default {
   props: [],
   mounted() {
     this.$store.dispatch("getStudentByCollege");
     queryMajor().then(res => {
       this.collegeList = res;
-      this.honorObj.college_id = this.$store.state.userInfo.college_id;
+      this.jobObj.college_id = this.$store.state.userInfo.college_id;
     });
     const { flag, data } = this.$route.params;
     if (flag) {
@@ -143,18 +124,20 @@ export default {
           ))
       );
       data.honor_time = Moment(data.honor_time).format("YYYY-MM-DD");
-      this.honorObj = data;
+      this.jobObj = data;
     }
   },
   data() {
     return {
-      honorObj: {
+      jobObj: {
         college_id: -1,
         student_id: "",
-        honor_type: "",
-        honor_time: "",
-        honor_name: "",
-        honor_rank: "",
+        job_name: "",
+        job_code: "",
+        job_address: "",
+        job_person: "",
+        job_tel: "",
+        job_content: "",
         fileList: []
       },
       userList: [],
@@ -166,24 +149,34 @@ export default {
           message: "请选择学生",
           trigger: "blur"
         },
-        honor_type: {
+        job_name: {
           required: true,
-          message: "请选择奖惩类型",
+          message: "请输入单位名称",
           trigger: "blur"
         },
-        honor_time: {
+        job_code: {
           required: true,
-          message: "请选择奖惩时间",
+          message: "请输入社会信用代码",
           trigger: "blur"
         },
-        honor_name: {
+        job_address: {
           required: true,
-          message: "请输入奖惩名称",
+          message: "请输入单位地址",
           trigger: "blur"
         },
-        honor_rank: {
+        job_person: {
           required: true,
-          message: "请选择奖惩级别",
+          message: "请输入单位联系人",
+          trigger: "blur"
+        },
+        job_tel: {
+          required: true,
+          message: "请输入联系人电话",
+          trigger: "blur"
+        },
+        job_content: {
+          required: true,
+          message: "请输入工作内容",
           trigger: "blur"
         }
       }
@@ -191,18 +184,18 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$refs["honorObj"].validate(async valid => {
+      this.$refs["jobObj"].validate(async valid => {
         if (valid) {
           let result;
           if (this.$route.params.flag) {
-            result = await updateHonor(this.honorObj);
+            result = await updateJob(this.jobObj);
             console.log(111);
           } else {
-            result = await addHonor(this.honorObj);
+            result = await addJob(this.jobObj);
           }
 
           if (result) {
-            this.honorObj = {
+            this.jobObj = {
               college_id: this.$store.state.userInfo.college_id,
               fileList: []
             };
@@ -218,18 +211,18 @@ export default {
       });
     },
     resetForm() {
-      this.$refs["honorObj"].resetFields();
-      this.honorObj.college_id = this.$store.state.userInfo.college_id;
+      this.$refs["jobObj"].resetFields();
+      this.jobObj.college_id = this.$store.state.userInfo.college_id;
     },
     goBack() {
       this.$router.back();
     },
     handleRemove(file) {
       console.log(file);
-      let index = this.honorObj.fileList.findIndex(
+      let index = this.jobObj.fileList.findIndex(
         item => file.file_id === item.file_id
       );
-      this.honorObj.fileList.splice(index, 1);
+      this.jobObj.fileList.splice(index, 1);
     },
     handlePreview(file) {
       console.log(file);
@@ -239,7 +232,7 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     onSunccess(response) {
-      this.honorObj.fileList.push({
+      this.jobObj.fileList.push({
         url: response.url,
         file_id: response.file_id,
         name: response.name
