@@ -1,6 +1,9 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "//localhost:3000/api";
+// 本地地址
+// axios.defaults.baseURL = "//localhost:3000/api";
+// 线上地址
+axios.defaults.baseURL = "//feifan.info:3000/api";
 axios.defaults.withCredentials = true;
 axios.interceptors.request.use(config => {
   return config;

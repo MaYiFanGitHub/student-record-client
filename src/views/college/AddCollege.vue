@@ -144,6 +144,8 @@ export default {
               type: "success",
               message: this.$route.params.flag ? "编辑成功!" : "添加成功!"
             });
+            // 获取院长身份的角色
+            this.$store.dispatch("getUserCollege");
           }
           if (this.$route.params.flag) {
             this.goBack();
