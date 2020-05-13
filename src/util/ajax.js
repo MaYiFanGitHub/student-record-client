@@ -1,9 +1,14 @@
 import axios from "axios";
 
-// 本地地址
-// axios.defaults.baseURL = "//localhost:3000/api";
-// 线上地址
-axios.defaults.baseURL = "//feifan.info:3000/api";
+const NODE_ENV = process.env.NODE_ENV;
+if (NODE_ENV === "development") {
+  // 本地地址
+  axios.defaults.baseURL = "//localhost:3000/api";
+} else {
+  // 线上地址
+  axios.defaults.baseURL = "//feifan.info:3000/api";
+}
+
 axios.defaults.withCredentials = true;
 axios.interceptors.request.use(config => {
   return config;
