@@ -878,6 +878,9 @@ export default {
     },
     handlePreview(file) {
       console.log(file);
+      let linkDOM = document.getElementById("golbalDownload");
+      linkDOM.href = file.url || file.file_url;
+      linkDOM.click();
     },
     beforeRemove(file, fileList) {
       console.log(fileList);

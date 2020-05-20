@@ -39,8 +39,8 @@
             @change="yearChange"
           >
             <el-option label="全部" value="all"></el-option>
-            <el-option label="荣誉" :value="1"></el-option>
-            <el-option label="处分" :value="0"></el-option>
+            <el-option label="荣誉" :value="0"></el-option>
+            <el-option label="处分" :value="1"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -58,7 +58,7 @@
         ></el-table-column>
         <el-table-column label="奖惩类型" align="center">
           <template slot-scope="scope">
-            {{ scope.row.honor_type == 1 ? "荣誉" : "处分" }}
+            {{ scope.row.honor_type !== 1 ? "荣誉" : "处分" }}
           </template>
         </el-table-column>
         <el-table-column
