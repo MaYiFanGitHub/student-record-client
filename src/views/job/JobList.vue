@@ -8,6 +8,7 @@
             placeholder="请选择"
             style="width:100%"
             @change="majorChange"
+            :disabled="$store.state.userInfo.role_id === 3"
           >
             <el-option label="全部" value="all"></el-option>
             <el-option
@@ -23,6 +24,7 @@
             v-model="formInline.class_id"
             placeholder="请选择"
             style="width:100%"
+            :disabled="$store.state.userInfo.role_id === 3"
           >
             <el-option label="全部" value="all"></el-option>
             <el-option
@@ -34,10 +36,20 @@
           </el-select>
         </el-form-item>
         <el-form-item label="姓名" prop="user_name">
-          <el-input type="text" v-model="formInline.user_name"> </el-input>
+          <el-input
+            type="text"
+            v-model="formInline.user_name"
+            :disabled="$store.state.userInfo.role_id === 3"
+          >
+          </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            :disabled="$store.state.userInfo.role_id === 3"
+            >查询</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
@@ -212,6 +224,17 @@ import { queryJob, removeJob } from "@api/job";
 export default {
   mounted() {
     queryMajorAndClass().then(res => (this.majorList = res));
+
+    // 判断是否为学生身份
+    let userInfo = this.$store.state.userInfo;
+    if (userInfo.role_id === 3) {
+      this.formInline = {
+        class_id: userInfo.class_id,
+        specialty: userInfo.specialty,
+        user_name: userInfo.user_name
+      };
+    }
+
     this.queryRoll();
   },
   data() {

@@ -205,7 +205,7 @@
           fixed="right"
           label="操作"
           width="120"
-          v-if="$store.state.userInfo.role_id != 3"
+          v-if="$store.state.userInfo.role_id === 4"
         >
           <template slot-scope="scope">
             <el-button
