@@ -36,6 +36,7 @@
             placeholder="请选择学生"
             style="width:100%"
             :disabled="this.$route.params.flag"
+            filterable
           >
             <el-option
               v-for="student in $store.state.studentListByCollege"

@@ -20,6 +20,7 @@
               placeholder="请选择"
               style="width:100%"
               disabled
+              filterable
             >
               <el-option
                 v-for="college in collegeList"
@@ -36,6 +37,7 @@
               v-model="classObj.specialty"
               placeholder="请选择"
               style="width:100%"
+              filterable
             >
               <el-option
                 v-for="major in majorList"
@@ -55,6 +57,7 @@
               v-model="classObj.teacher_id"
               placeholder="请选择"
               style="width:100%"
+              filterable
             >
               <el-option
                 v-for="teacher in userList"

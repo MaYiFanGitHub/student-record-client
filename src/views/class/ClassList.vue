@@ -39,6 +39,12 @@
             placeholder="请输入班级名称"
           ></el-input>
         </el-form-item>
+        <el-form-item label="班主任">
+          <el-input
+            v-model="formInline.user_name"
+            placeholder="请输入班级名称"
+          ></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
@@ -168,7 +174,8 @@ export default {
       formInline: {
         college_id: "all",
         class_name: "",
-        specialty: "all"
+        specialty: "all",
+        user_name: ""
       },
       collegeList: [],
       majorList: [],
@@ -184,14 +191,15 @@ export default {
   methods: {
     async queryClass() {
       const { currentPage, pageSize } = this.page;
-      const { college_id, class_name, specialty } = this.formInline;
+      const { college_id, class_name, specialty, user_name } = this.formInline;
       this.loading = true;
       const result = await getAllClass(
         currentPage,
         pageSize,
         college_id,
         class_name,
-        specialty
+        specialty,
+        user_name
       );
       this.classList = result.classList;
       this.page = result.page;
@@ -258,7 +266,7 @@ export default {
 
 <style lang="scss" scoped>
 .user-list {
-  width: 1200px;
+  width: 1400px;
   margin: 0 auto;
   min-height: 100%;
   > .user-list-header,

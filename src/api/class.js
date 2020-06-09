@@ -8,10 +8,18 @@ export const getAllClass = (
   pageSize = 10,
   college_id = "",
   class_name = "",
-  specialty = ""
+  specialty = "",
+  user_name = ""
 ) =>
   ajax.get("/class/all", {
-    params: { currentPage, pageSize, college_id, class_name, specialty }
+    params: {
+      currentPage,
+      pageSize,
+      college_id,
+      class_name,
+      specialty,
+      user_name
+    }
   });
 // 修改班级
 export const editClass = classObj => ajax.post("/class/edit", classObj);

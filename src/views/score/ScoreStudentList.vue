@@ -128,7 +128,13 @@
           prop="score_desc"
           align="center"
         ></el-table-column>
-        <el-table-column align="center" fixed="right" label="操作" width="120">
+        <el-table-column
+          align="center"
+          fixed="right"
+          label="操作"
+          width="120"
+          v-if="$store.state.userInfo.role_id !== 1"
+        >
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -136,7 +142,10 @@
               icon="el-icon-edit"
               circle
               size="mini"
-              v-if="$store.state.userInfo.role_id === 4"
+              v-if="
+                $store.state.userInfo.role_id === 4 ||
+                  $store.state.userInfo.role_id === 2
+              "
             ></el-button>
             <el-button
               type="danger"
@@ -144,7 +153,10 @@
               icon="el-icon-delete"
               circle
               size="mini"
-              v-if="$store.state.userInfo.role_id === 4"
+              v-if="
+                $store.state.userInfo.role_id === 4 ||
+                  $store.state.userInfo.role_id === 2
+              "
             ></el-button>
             <el-button
               :type="

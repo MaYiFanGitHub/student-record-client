@@ -120,7 +120,31 @@ import { getAllStudent } from "@api/student";
 import { queryMajorAndClass } from "@api/major";
 export default {
   mounted() {
-    queryMajorAndClass().then(res => (this.majorList = res));
+    queryMajorAndClass().then(res => {
+      let { role_id, teacher_id } = this.$store.state.userInfo;
+      let resList;
+      if (role_id == 2) {
+        resList = res.filter(item => {
+          let tempClassList = [];
+          tempClassList = item.classList.filter(cItem => {
+            return cItem.teacher_id == teacher_id;
+          });
+          console.log(tempClassList);
+          if (tempClassList.length > 0) {
+            item.classList = tempClassList;
+            console.log(1);
+            return true;
+          } else {
+            console.log(2);
+            return false;
+          }
+        });
+        console.log(resList);
+        this.majorList = resList;
+      } else {
+        this.majorList = res;
+      }
+    });
     this.queryScore();
   },
   data() {

@@ -36,6 +36,7 @@
               v-model="collegeObj.user_id"
               placeholder="请选择"
               style="width:100%"
+              filterable
             >
               <el-option
                 v-for="userCollege in userCollegeList"
